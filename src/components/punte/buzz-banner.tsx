@@ -7,10 +7,10 @@ import { cn } from "@/lib/utils";
 
 const ICONS = { nume: UserRound, intrebare: CircleHelp, tema: NotebookPen, atentie: BellRing } as const;
 const COLORS: Record<BuzzKind, string> = {
-  nume: "bg-elev text-white",
-  intrebare: "bg-sem-intrebare text-ink",
-  tema: "bg-sem-inteles text-white",
-  atentie: "bg-sem-neinteles text-white",
+  nume: "bg-ink text-white",
+  intrebare: "bg-ink text-white",
+  tema: "bg-ink text-white",
+  atentie: "bg-prof text-white",
 };
 
 /** Alerta vizuală care însoțește vibrația (pe iOS e singurul efect). */
@@ -26,7 +26,7 @@ export function BuzzBanner({ buzz }: { buzz: { kind: BuzzKind; text?: string; id
       >
         <Icon className="size-10 shrink-0" aria-hidden />
         <div className="min-w-0">
-          <p className="font-display text-2xl font-extrabold leading-tight">{BUZZ_META[buzz.kind].label}</p>
+          <p className="font-display text-2xl font-semibold leading-tight">{BUZZ_META[buzz.kind].label}</p>
           {buzz.text ? <p className="truncate text-lg font-bold opacity-90">{buzz.text}</p> : null}
         </div>
       </div>

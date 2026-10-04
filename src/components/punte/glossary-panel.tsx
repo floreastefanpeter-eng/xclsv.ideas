@@ -60,7 +60,7 @@ export function GlossaryPanel({
             const explanation = translations.get(`x:${e.term}`);
             return (
               <div key={e.term}>
-                <dt className={cn("font-display font-extrabold leading-tight", large ? "text-3xl" : "text-xl", dark ? "text-white" : "text-ink")}>
+                <dt className={cn("font-display font-semibold leading-tight", large ? "text-3xl" : "text-xl", dark ? "text-white" : "text-ink")}>
                   {e.term}
                   {term ? (
                     <span lang={lang} className={cn("ml-2 font-sans font-bold", large ? "text-2xl" : "text-lg", dark ? "text-elev-line" : "text-elev")}>

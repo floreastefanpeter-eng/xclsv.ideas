@@ -25,7 +25,8 @@ import {
 import type { AccountRole } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
-const field = "h-12 bg-white text-lg";
+const field =
+  "h-12 rounded-md border-ink/15 bg-white text-base transition-[border-color,box-shadow] duration-200 hover:border-ink/30 focus-visible:border-ink focus-visible:ring-2 focus-visible:ring-ink/15";
 
 function PasswordInput({
   id,
@@ -74,7 +75,7 @@ function ErrorLine({ id, message }: { id: string; message: string | null }) {
     <p
       id={id}
       role="alert"
-      className="rounded-md bg-danger-soft px-3 py-2 font-bold text-danger-ink"
+      className="rounded-md border border-prof/30 bg-danger-soft px-3 py-2 text-sm font-semibold text-danger-ink"
     >
       {message}
     </p>
@@ -205,80 +206,57 @@ export function AuthForm({ next }: { next?: string }) {
 
   return (
     <div className="flex flex-col">
-      <fieldset className="grid grid-cols-2">
-        <legend className="sr-only">Sunt</legend>
-        {ROLES.map((r) => {
-          const on = role === r.value;
-          const red = r.value === "teacher";
-          return (
-            <label
-              key={r.value}
-              className={cn(
-                "relative flex min-h-20 cursor-pointer flex-col justify-center gap-0.5 px-4 py-3 transition-colors has-focus-visible:ring-4 has-focus-visible:ring-inset has-focus-visible:ring-amber",
-                on
-                  ? red
-                    ? "bg-prof text-white"
-                    : "bg-elev text-white"
-                  : red
-                    ? "bg-prof-soft text-prof-dark hover:bg-prof/15"
-                    : "bg-elev-soft text-elev-dark hover:bg-elev/15",
-              )}
-            >
-              <input
-                type="radio"
-                name="role"
-                value={r.value}
-                checked={on}
-                onChange={() => setRole(r.value)}
-                className="sr-only"
-              />
-              <span className="flex items-center gap-2">
-                <r.icon className="size-5" aria-hidden />
-                <span className="plate text-2xl leading-none">{r.title}</span>
-              </span>
-              <span
+      <div className="border-b border-border px-4 pb-4 pt-5 sm:px-6">
+        <div className="mb-4 flex items-center justify-between gap-2">
+          <div role="group" aria-label="Ce vrei să faci" className="flex items-center gap-5 text-[0.95rem] font-semibold">
+            {(["login", "register"] as const).map((m) => (
+              <button
+                key={m}
+                type="button"
+                aria-pressed={tab === m}
+                onClick={() => {
+                  setTab(m);
+                  setError(null);
+                }}
                 className={cn(
-                  "text-sm leading-snug",
-                  on ? "text-white/85" : "",
+                  "relative min-h-11 transition-colors after:absolute after:inset-x-0 after:bottom-1.5 after:h-[2px] after:bg-prof after:transition-transform after:duration-300",
+                  tab === m ? "text-ink after:scale-x-100" : "text-muted-foreground after:scale-x-0 hover:text-ink",
                 )}
               >
-                {r.text}
-              </span>
-            </label>
-          );
-        })}
-      </fieldset>
+                {m === "login" ? "Am cont" : "Cont nou"}
+              </button>
+            ))}
+          </div>
+          <span className="label text-muted-foreground">Sunt</span>
+        </div>
+        <fieldset className="grid grid-cols-2 gap-2">
+          <legend className="sr-only">Sunt</legend>
+          {ROLES.map((r) => {
+            const on = role === r.value;
+            return (
+              <label
+                key={r.value}
+                className={cn(
+                  "relative flex cursor-pointer flex-col gap-1 rounded-lg border p-3 transition-[border-color,background-color,box-shadow] duration-200 has-focus-visible:ring-2 has-focus-visible:ring-ink/20",
+                  on ? "border-ink bg-white shadow-[0_6px_18px_-14px_rgba(10,10,10,0.6)]" : "border-border bg-paper hover:border-ink/30",
+                )}
+              >
+                <input type="radio" name="role" value={r.value} checked={on} onChange={() => setRole(r.value)} className="sr-only" />
+                <span className="flex items-center justify-between gap-2">
+                  <span className="flex items-center gap-2 font-semibold">
+                    <r.icon className={cn("size-4", on ? "text-ink" : "text-muted-foreground")} aria-hidden />
+                    {r.title}
+                  </span>
+                  <span aria-hidden className={cn("size-2 rounded-full transition-colors", on ? "bg-prof" : "bg-ink/15")} />
+                </span>
+                <span className="text-xs leading-snug text-muted-foreground">{r.text}</span>
+              </label>
+            );
+          })}
+        </fieldset>
+      </div>
 
       <div className="flex flex-col gap-5 p-4 sm:p-6">
-        <div
-          className="flex items-center gap-1 text-base font-bold"
-          role="group"
-          aria-label="Ce vrei să faci"
-        >
-          {(["login", "register"] as const).map((m) => (
-            <button
-              key={m}
-              type="button"
-              aria-pressed={tab === m}
-              onClick={() => {
-                setTab(m);
-                setError(null);
-              }}
-              className={cn(
-                "min-h-11 rounded-md px-3 underline-offset-[6px] transition-colors",
-                tab === m
-                  ? "text-ink underline decoration-[3px] " +
-                      (role === "teacher"
-                        ? "decoration-prof"
-                        : "decoration-elev")
-                  : "text-muted-foreground hover:text-ink",
-              )}
-            >
-              {m === "login" ? "Am cont" : "Cont nou"}
-            </button>
-          ))}
-        </div>
-
         {tab === "login" ? (
           <form
             onSubmit={login}
@@ -286,7 +264,7 @@ export function AuthForm({ next }: { next?: string }) {
             aria-describedby={error ? "auth-error" : undefined}
           >
             <div className="flex flex-col gap-1.5">
-              <Label htmlFor="login-email" className="text-base font-bold">
+              <Label htmlFor="login-email" className="text-sm font-semibold">
                 Email
               </Label>
               <Input
@@ -301,13 +279,13 @@ export function AuthForm({ next }: { next?: string }) {
             </div>
             <div className="flex flex-col gap-1.5">
               <div className="flex items-baseline justify-between gap-2">
-                <Label htmlFor="login-password" className="text-base font-bold">
+                <Label htmlFor="login-password" className="text-sm font-semibold">
                   Parola
                 </Label>
                 <button
                   type="button"
                   onClick={reset}
-                  className="min-h-11 text-sm font-bold text-elev underline"
+                  className="min-h-11 text-sm font-medium text-ink underline decoration-ink/30 underline-offset-4 hover:decoration-prof"
                 >
                   Am uitat parola
                 </button>
@@ -326,7 +304,7 @@ export function AuthForm({ next }: { next?: string }) {
               disabled={busy}
               className={cn(
                 "mt-1 w-full",
-                role === "teacher" && "bg-prof hover:bg-prof-dark",
+                
               )}
             >
               {busy ? <Loader2 className="animate-spin" aria-hidden /> : null}
@@ -340,7 +318,7 @@ export function AuthForm({ next }: { next?: string }) {
             aria-describedby={error ? "auth-error" : undefined}
           >
             <div className="flex flex-col gap-1.5">
-              <Label htmlFor="reg-name" className="text-base font-bold">
+              <Label htmlFor="reg-name" className="text-sm font-semibold">
                 Numele tău
               </Label>
               <Input
@@ -356,7 +334,7 @@ export function AuthForm({ next }: { next?: string }) {
               />
             </div>
             <div className="flex flex-col gap-1.5">
-              <Label htmlFor="reg-email" className="text-base font-bold">
+              <Label htmlFor="reg-email" className="text-sm font-semibold">
                 Email
               </Label>
               <Input
@@ -370,7 +348,7 @@ export function AuthForm({ next }: { next?: string }) {
               />
             </div>
             <div className="flex flex-col gap-1.5">
-              <Label htmlFor="reg-password" className="text-base font-bold">
+              <Label htmlFor="reg-password" className="text-sm font-semibold">
                 Parola{" "}
                 <span className="font-normal text-muted-foreground">
                   (minim 6 caractere)
@@ -384,7 +362,7 @@ export function AuthForm({ next }: { next?: string }) {
               />
             </div>
             <div className="flex flex-col gap-1.5">
-              <Label htmlFor="reg-school" className="text-base font-bold">
+              <Label htmlFor="reg-school" className="text-sm font-semibold">
                 Școala{" "}
                 <span className="font-normal text-muted-foreground">
                   (opțional)
@@ -405,7 +383,7 @@ export function AuthForm({ next }: { next?: string }) {
               disabled={busy}
               className={cn(
                 "mt-1 w-full",
-                role === "teacher" && "bg-prof hover:bg-prof-dark",
+                
               )}
             >
               {busy ? <Loader2 className="animate-spin" aria-hidden /> : null}
@@ -465,13 +443,13 @@ function ConfirmCode({
 
   return (
     <div className="flex flex-col gap-4 p-4 sm:p-6">
-      <MailCheck className="size-10 text-elev" aria-hidden />
-      <h2 className="font-display text-3xl font-extrabold">Verifică emailul</h2>
+      <MailCheck className="size-9 text-prof" aria-hidden />
+      <h2 className="text-2xl font-semibold tracking-[-0.03em]">Verifică emailul</h2>
       <p className="text-lg">
         Am trimis un cod de confirmare la <strong>{email}</strong>. Scrie-l aici (sau deschide linkul din email).
       </p>
       <form onSubmit={submit} className="flex flex-col gap-3" aria-describedby={error ? "code-error" : undefined}>
-        <Label htmlFor="signup-code" className="text-base font-bold">
+        <Label htmlFor="signup-code" className="text-sm font-semibold">
           Codul din email
         </Label>
         <Input
@@ -503,7 +481,7 @@ function ConfirmCode({
               setError((err as Error).message);
             }
           }}
-          className="min-h-11 font-bold text-elev underline disabled:text-muted-foreground disabled:no-underline"
+          className="min-h-11 font-semibold text-ink underline decoration-ink/30 underline-offset-4 hover:decoration-prof disabled:text-muted-foreground disabled:no-underline"
         >
           {wait > 0 ? `Retrimite codul (${wait} s)` : "Retrimite codul"}
         </button>

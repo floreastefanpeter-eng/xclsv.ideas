@@ -12,13 +12,13 @@ export const metadata: Metadata = { title: "Ghidul semnelor · SIGNals" };
 export default function SignsPage() {
   return (
     <>
-    <StationBand right={<Link href="/" className={cn(buttonVariants({ variant: "ghost" }), "text-white hover:bg-white/10 hover:text-white")}>
+    <StationBand right={<Link href="/" className={cn(buttonVariants({ variant: "ghost" }), "")}>
           <ArrowLeft aria-hidden />
           Înapoi
         </Link>} />
     <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-5 px-4 pb-16 pt-6">
       <div>
-        <h1 className="font-display text-4xl font-extrabold">Ghidul semnelor</h1>
+        <h1 className="font-display text-4xl font-semibold">Ghidul semnelor</h1>
         <p className="mt-2 text-lg text-ink/80">
           Semnele pe care le recunoaște modelul open source, cu traducerea în română. Fiecare are un video ASL de referință și
           căutarea semnului românesc în DLMG.

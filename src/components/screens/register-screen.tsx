@@ -113,8 +113,8 @@ export default function RegisterScreen() {
     <StationBand
       logoHref="/panou"
       right={
-        <span className="inline-flex items-center gap-1.5 rounded-md bg-white/10 px-3 py-1.5 text-sm font-bold">
-          <ShieldCheck className="size-4 text-sem-inteles" aria-hidden />
+        <span className="hidden items-center gap-1.5 rounded-md border border-border px-3 py-1.5 text-sm font-semibold sm:inline-flex">
+          <ShieldCheck className="size-4 text-ink" aria-hidden />
           Doar pe acest dispozitiv
         </span>
       }
@@ -122,7 +122,7 @@ export default function RegisterScreen() {
     <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-5 px-4 pb-16 pt-6">
 
       <div>
-        <h1 className="font-display text-4xl font-extrabold">Cine semnează?</h1>
+        <h1 className="font-display text-4xl font-semibold">Cine semnează?</h1>
         <p className="mt-2 text-lg text-ink/80">
           SIGNals recunoaște fața elevului ca să o lase vizibilă pe cameră și să le estompeze pe ale colegilor.
         </p>
@@ -133,7 +133,7 @@ export default function RegisterScreen() {
           <li
             key={s}
             aria-current={step === s ? "step" : undefined}
-            className={cn("h-2 flex-1 rounded-full", step === s ? "bg-elev" : i < ["details", "scan", "done"].indexOf(step) ? "bg-sem-inteles" : "bg-ink/15")}
+            className={cn("h-2 flex-1 rounded-full", step === s ? "bg-elev" : i < ["details", "scan", "done"].indexOf(step) ? "bg-ink" : "bg-ink/15")}
           />
         ))}
       </ol>
@@ -152,7 +152,7 @@ export default function RegisterScreen() {
           </label>
 
           <div className="rounded-lg bg-elev-soft p-4 text-ink">
-            <h2 className="mb-2 font-display text-xl font-extrabold">Ce se întâmplă cu fața ta</h2>
+            <h2 className="mb-2 font-display text-xl font-semibold">Ce se întâmplă cu fața ta</h2>
             <ul className="list-disc space-y-1 pl-5">
               <li>Camera calculează 5 „amprente” ale feței (câte 128 de numere). Nu se salvează nicio poză.</li>
               <li>Amprentele rămân <strong>doar în acest browser</strong>. Nu ajung pe server și nu sunt trimise nimănui.</li>
@@ -187,7 +187,7 @@ export default function RegisterScreen() {
 
       {step === "scan" ? (
         <section className="space-y-4 rounded-xl bg-white p-5 border border-border" aria-labelledby="scan-title">
-          <h2 id="scan-title" className="font-display text-2xl font-extrabold">
+          <h2 id="scan-title" className="font-display text-2xl font-semibold">
             Scanarea feței
           </h2>
           <div
@@ -241,8 +241,8 @@ export default function RegisterScreen() {
 
       {step === "done" && registration ? (
         <section className="space-y-4 rounded-xl bg-white p-5 border border-border" aria-labelledby="done-title">
-          <h2 id="done-title" className="flex items-center gap-2 font-display text-2xl font-extrabold">
-            <Check className="size-7 text-sem-inteles" aria-hidden />
+          <h2 id="done-title" className="flex items-center gap-2 font-display text-2xl font-semibold">
+            <Check className="size-7 text-ink" aria-hidden />
             {registration.name} este înregistrat
           </h2>
           <p className="text-lg">

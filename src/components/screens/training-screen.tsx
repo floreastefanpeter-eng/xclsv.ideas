@@ -280,7 +280,7 @@ export default function TrainingScreen() {
     phase.kind === "countdown" ? (
       <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/55 text-center" role="status" aria-live="assertive">
         <p className="text-xl font-bold">Pregătește semnul „{labelOf(phase.id)}”</p>
-        <p className="font-display text-8xl font-black">{phase.n}</p>
+        <p className="font-display text-8xl font-semibold">{phase.n}</p>
       </div>
     ) : phase.kind === "moving" ? (
       <div className="absolute inset-x-0 bottom-0 flex items-center gap-3 bg-sem-neinteles px-4 py-3 font-bold" role="status" aria-live="polite">
@@ -300,11 +300,11 @@ export default function TrainingScreen() {
     return (
       <li
         key={s.id}
-        className={cn("flex flex-col gap-3 rounded-xl border-2 bg-white p-4", count + movingCount > 0 ? "border-sem-inteles" : "border-transparent", wide && "sm:col-span-2")}
+        className={cn("flex flex-col gap-3 rounded-xl border-2 bg-white p-4", count + movingCount > 0 ? "border-ink" : "border-transparent", wide && "sm:col-span-2")}
       >
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
-            <h3 className="flex items-center gap-2 font-display text-xl font-extrabold">
+            <h3 className="flex items-center gap-2 font-display text-xl font-semibold">
               {s.key ? <kbd className="rounded-md bg-ink px-2 py-0.5 font-mono text-sm text-white">{s.key}</kbd> : null}
               {s.word}
             </h3>
@@ -314,7 +314,7 @@ export default function TrainingScreen() {
           <span
             className={cn(
               "shrink-0 rounded-full px-3 py-1 text-sm font-bold tabular-nums",
-              count + movingCount > 0 ? "bg-ok-soft text-sem-inteles" : "bg-muted text-muted-foreground",
+              count + movingCount > 0 ? "bg-ok-soft text-ink" : "bg-muted text-muted-foreground",
             )}
           >
             {count} cadre · {movingCount} mișcări
@@ -366,17 +366,17 @@ export default function TrainingScreen() {
         <header className="flex items-center justify-end gap-3">
           <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 text-sm font-bold" role="status">
             {sync === "saved" ? (
-              <Cloud className="size-4 text-sem-inteles" aria-hidden />
+              <Cloud className="size-4 text-ink" aria-hidden />
             ) : sync === "saving" || sync === "loading" ? (
               <Loader2 className="size-4 animate-spin" aria-hidden />
             ) : (
-              <CloudOff className="size-4 text-sem-intrebare" aria-hidden />
+              <CloudOff className="size-4 text-prof" aria-hidden />
             )}
             {sync === "saved" ? "Salvat în cont" : sync === "saving" ? "Se salvează…" : sync === "loading" ? "Se încarcă…" : "Salvat doar local"}
           </span>
         </header>
         <div>
-          <h1 className="font-display text-3xl font-extrabold">Dicționarul de semne</h1>
+          <h1 className="font-display text-3xl font-semibold">Dicționarul de semne</h1>
           <p className="mt-1 text-lg text-ink/80">
             Semne statice: 2–3 înregistrări de 2 secunde sau 20–50 de cadre. Semne cu mișcare (de exemplu semne LSR): 3–5 înregistrări cu „Mișcare”, cu umerii în cadru.
           </p>
@@ -485,7 +485,7 @@ export default function TrainingScreen() {
           }}
         >
           <div className="flex flex-wrap items-baseline justify-between gap-2">
-            <h2 className="font-display text-xl font-extrabold">Adaugă un semn al tău</h2>
+            <h2 className="font-display text-xl font-semibold">Adaugă un semn al tău</h2>
             <button
               type="button"
               className="min-h-11 text-sm font-bold text-elev underline"
@@ -531,7 +531,7 @@ export default function TrainingScreen() {
           if (!list.length) return null;
           return (
             <section key={cat} aria-labelledby={`cat-${cat}`}>
-              <h2 id={`cat-${cat}`} className="mb-3 font-display text-2xl font-extrabold">
+              <h2 id={`cat-${cat}`} className="mb-3 font-display text-2xl font-semibold">
                 {CATEGORY_LABELS[cat]}
               </h2>
               <ul className="grid gap-3 sm:grid-cols-2">{list.map((s) => wordCard(s))}</ul>
@@ -540,7 +540,7 @@ export default function TrainingScreen() {
         })}
 
         <section aria-labelledby="cat-none">
-          <h2 id="cat-none" className="mb-3 font-display text-2xl font-extrabold">
+          <h2 id="cat-none" className="mb-3 font-display text-2xl font-semibold">
             Repaus
           </h2>
           <ul className="grid gap-3 sm:grid-cols-2">{wordCard({ id: NONE_SIGN, word: NONE_DEF.word, hint: NONE_DEF.hint }, true)}</ul>

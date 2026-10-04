@@ -107,7 +107,7 @@ function LessonLine({ rows, teacher }: { rows: Row[] | null; teacher: boolean })
               />
             </span>
             <Link href={href} className="group flex min-w-0 flex-col justify-center py-3 outline-none focus-visible:underline">
-              <span className="truncate font-display text-xl font-extrabold leading-tight group-hover:underline">{l.title}</span>
+              <span className="truncate font-display text-xl font-semibold leading-tight group-hover:underline">{l.title}</span>
               <span className="truncate text-sm text-muted-foreground">
                 {active ? (
                   <strong className={teacher ? "text-prof-dark" : "text-elev-dark"}>În desfășurare · </strong>
@@ -124,7 +124,7 @@ function LessonLine({ rows, teacher }: { rows: Row[] | null; teacher: boolean })
               </span>
               <Link
                 href={href}
-                className={cn(buttonVariants({ size: "sm", variant: active ? "default" : "outline" }), active && teacher && "bg-prof hover:bg-prof-dark", !active && "bg-white")}
+                className={cn(buttonVariants({ size: "sm", variant: active ? "default" : "outline" }), active && teacher && "bg-prof hover:bg-ink", !active && "bg-white")}
               >
                 {active ? "Continuă" : "Memoria"}
                 <ArrowRight aria-hidden />
@@ -170,7 +170,7 @@ function StudentDashboard({ profile, updateProfile }: { profile: Profile; update
             Intră în lecție
           </h2>
           <p className="mb-4 text-white/85">Codul îl vezi pe telefonul profesorului sau pe proiector.</p>
-          <JoinForm dark label="Codul lecției" target={(code) => `/elev/${code}`} autoFocus />
+          <JoinForm dark label="Codul lecției" target={(code) => `/elev/${code}`} autoFocus submitLabel="Intră" />
         </section>
 
         <Panel id="limba" tone="elev" title="Subtitrările mele">
@@ -207,7 +207,7 @@ function StudentDashboard({ profile, updateProfile }: { profile: Profile; update
                 <Link href={stop.href} className="group flex min-h-18 items-center gap-3 py-3 pr-4 outline-none focus-visible:bg-elev-soft">
                   <stop.icon className="size-6 shrink-0 text-elev" aria-hidden />
                   <span className="min-w-0 flex-1">
-                    <span className="block font-display text-xl font-extrabold leading-tight group-hover:underline">{stop.title}</span>
+                    <span className="block font-display text-xl font-semibold leading-tight group-hover:underline">{stop.title}</span>
                     <span className="text-sm text-muted-foreground">{stop.text}</span>
                   </span>
                   <ArrowRight className="size-5 shrink-0 text-elev transition-transform group-hover:translate-x-1" aria-hidden />
@@ -245,7 +245,7 @@ export default function DashboardScreen() {
             </p>
           </StationBand>
           <main className="mx-auto w-full max-w-7xl flex-1 px-4 pb-14 pt-6 sm:px-6 lg:pt-10">
-            <h1 className="mb-6 font-display text-4xl font-extrabold leading-tight sm:text-5xl">
+            <h1 className="mb-6 font-display text-4xl font-semibold leading-tight sm:text-5xl">
               Bună, <span className={profile.role === "teacher" ? "text-prof" : "text-elev"}>{firstName(profile.display_name)}</span>
             </h1>
             {profile.role === "admin" ? (

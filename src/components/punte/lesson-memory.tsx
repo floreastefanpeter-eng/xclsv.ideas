@@ -80,7 +80,7 @@ export function LessonMemory({
   };
 
   const card = dark ? "bg-white/5 border-white/15" : "bg-white border-border";
-  const heading = cn("mb-2 font-display font-extrabold", large ? "text-3xl" : "text-xl");
+  const heading = cn("mb-2 font-display font-semibold", large ? "text-3xl" : "text-xl");
   const body = large ? "text-2xl" : "text-lg";
 
   return (
@@ -89,7 +89,7 @@ export function LessonMemory({
       className={cn("rounded-xl border-2 p-5", dark ? "border-white/20 text-white" : "border-ink/10 bg-white/60", className)}
     >
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-        <h2 id="memoria-lectiei" className={cn("flex items-center gap-2 font-display font-extrabold", large ? "text-4xl" : "text-2xl")}>
+        <h2 id="memoria-lectiei" className={cn("flex items-center gap-2 font-display font-semibold", large ? "text-4xl" : "text-2xl")}>
           <NotebookText className={cn(large ? "size-8" : "size-6", dark ? "text-amber" : "text-elev")} aria-hidden />
           Memoria lecției
         </h2>

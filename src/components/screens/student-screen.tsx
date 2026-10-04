@@ -416,7 +416,7 @@ function StudentLesson({
     <StationBand logoHref="/panou" right={<AccountMenu profile={profile} />}>
       <p className="min-w-0 truncate">
         <span className="block truncate text-lg font-bold leading-tight">{lesson.title}</span>
-        <span className="block truncate text-sm text-white/70">{lesson.subject}</span>
+        <span className="block truncate text-sm text-muted-foreground">{lesson.subject}</span>
       </p>
     </StationBand>
     <main className="mx-auto grid w-full max-w-7xl flex-1 gap-4 px-4 pb-10 pt-4 sm:px-6 lg:grid-cols-[minmax(0,1fr)_26rem]">
@@ -436,7 +436,7 @@ function StudentLesson({
 
         {!registration && !gateDismissed ? (
           <section aria-labelledby="inregistrare" className="rounded-xl border-4 border-elev bg-white p-4">
-            <h2 id="inregistrare" className="flex items-center gap-2 font-display text-xl font-extrabold">
+            <h2 id="inregistrare" className="flex items-center gap-2 font-display text-xl font-semibold">
               <ScanFace className="size-6 text-elev" aria-hidden />
               Mai întâi: înregistrează elevul
             </h2>
@@ -464,7 +464,7 @@ function StudentLesson({
         >
           {seen ? (
             <p className="flex items-center gap-2 rounded-lg bg-white px-4 py-3 text-xl font-bold text-ink" role="status">
-              <Eye className="size-6 text-sem-inteles" aria-hidden />
+              <Eye className="size-6 text-ink" aria-hidden />
               Profesorul a văzut
             </p>
           ) : null}
@@ -553,7 +553,7 @@ function StudentLesson({
           <div className="flex items-start gap-3 rounded-xl bg-warn-soft p-4 text-warn-ink" role="status" aria-live="assertive">
             <CircleHelp className="mt-0.5 size-7 shrink-0" aria-hidden />
             <div>
-              <p className="font-display text-xl font-extrabold">Semn necunoscut</p>
+              <p className="font-display text-xl font-semibold">Semn necunoscut</p>
               <p className="text-sm font-bold">
                 {unknownFlash.top?.length
                   ? `Cel mai apropiat: ${unknownFlash.top
@@ -583,7 +583,7 @@ function StudentLesson({
             pending ? (
               <div className="absolute inset-0 flex flex-col justify-end bg-elev/85 p-4" role="alertdialog" aria-label="Confirmă semnul">
                 <p className="text-sm font-bold text-white/80">Se trimite…</p>
-                <p className="font-display text-3xl font-extrabold">{pending.text}</p>
+                <p className="font-display text-3xl font-semibold">{pending.text}</p>
                 <div className="my-3 h-3 overflow-hidden rounded-full bg-white/25">
                   <div key={pending.text + pending.sign.id} className="confirm-bar h-full bg-white" style={{ ["--confirm-ms" as string]: `${CONFIRM_MS}ms` }} />
                 </div>
@@ -610,7 +610,7 @@ function StudentLesson({
 
         {pending && tracker.status !== "ready" ? (
           <div className="rounded-xl bg-elev p-4 text-white" role="alertdialog" aria-label="Confirmă semnul">
-            <p className="font-display text-2xl font-extrabold">{pending.text}</p>
+            <p className="font-display text-2xl font-semibold">{pending.text}</p>
             <div className="my-3 h-3 overflow-hidden rounded-full bg-white/25">
               <div key={pending.text} className="confirm-bar h-full bg-white" style={{ ["--confirm-ms" as string]: `${CONFIRM_MS}ms` }} />
             </div>
@@ -622,7 +622,7 @@ function StudentLesson({
         ) : null}
 
         <section aria-labelledby="dictionar" className="rounded-xl border border-border bg-white p-4">
-          <h2 id="dictionar" className="mb-1 flex items-center gap-2 font-display text-xl font-extrabold">
+          <h2 id="dictionar" className="mb-1 flex items-center gap-2 font-display text-xl font-semibold">
             <Hand className="size-5" aria-hidden />
             Dicționarul de semne
           </h2>
@@ -648,7 +648,7 @@ function StudentLesson({
                       {s.key ? <kbd className="rounded-md bg-ink px-2 py-0.5 font-mono text-sm text-white">{s.key}</kbd> : null}
                       <span className="flex-1 font-bold">{s.word}</span>
                       <span
-                        className={cn("size-2.5 shrink-0 rounded-full", trainedSet.has(s.id) ? "bg-sem-inteles" : "bg-sem-neutru/50")}
+                        className={cn("size-2.5 shrink-0 rounded-full", trainedSet.has(s.id) ? "bg-ink" : "bg-sem-neutru/50")}
                         aria-label={trainedSet.has(s.id) ? "antrenat" : "neantrenat"}
                       />
                     </Button>
@@ -691,7 +691,7 @@ function VoicePicker({
   const sample = phraseFor(BASE_DICTIONARY.find((s) => s.id === "termen")!, terms).text;
   return (
     <section aria-labelledby="vocea" className="rounded-xl border border-border bg-white p-4">
-      <h2 id="vocea" className="mb-3 flex items-center gap-2 font-display text-xl font-extrabold">
+      <h2 id="vocea" className="mb-3 flex items-center gap-2 font-display text-xl font-semibold">
         <Volume2 className="size-5" aria-hidden />
         Vocea mea
       </h2>

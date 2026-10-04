@@ -27,7 +27,7 @@ export function initials(name: string) {
 const item = "min-h-11 gap-2.5 px-3 text-base";
 
 /** Meniul contului: cine e conectat, panoul, ieșirea. */
-export function AccountMenu({ profile, dark = true }: { profile: Profile; dark?: boolean }) {
+export function AccountMenu({ profile, dark = false }: { profile: Profile; dark?: boolean }) {
   const router = useRouter();
   const teacher = profile.role !== "student";
   const admin = profile.role === "admin";
@@ -35,14 +35,14 @@ export function AccountMenu({ profile, dark = true }: { profile: Profile; dark?:
     <DropdownMenu>
       <DropdownMenuTrigger
         className={cn(
-          "inline-flex h-11 items-center gap-2 rounded-md pl-1 pr-2 font-bold outline-none focus-visible:ring-4 focus-visible:ring-elev-line",
-          dark ? "text-white hover:bg-white/10" : "text-ink hover:bg-muted",
+          "inline-flex h-11 items-center gap-2 rounded-full border border-transparent pl-1 pr-3 font-semibold outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ink",
+          dark ? "text-white hover:bg-white/10" : "text-ink hover:border-border hover:bg-white",
         )}
         aria-label={`Contul ${profile.display_name}`}
       >
         <span
           aria-hidden
-          className={cn("plate flex size-9 items-center justify-center rounded-md text-base text-white", teacher ? "bg-prof" : "bg-elev")}
+          className={cn("flex size-9 items-center justify-center rounded-full text-sm font-semibold text-white", profile.role === "teacher" ? "bg-prof" : "bg-ink")}
         >
           {initials(profile.display_name)}
         </span>

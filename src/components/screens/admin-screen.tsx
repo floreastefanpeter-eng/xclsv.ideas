@@ -165,13 +165,13 @@ function AdminPanel({ profile }: { profile: Profile }) {
     <>
       <StationBand logoHref="/panou" right={<AccountMenu profile={profile} />}>
         <p className="flex items-center gap-2 truncate text-lg font-bold">
-          <ShieldCheck className="size-5 text-amber" aria-hidden />
+          <ShieldCheck className="size-5 text-prof" aria-hidden />
           Administrare
         </p>
       </StationBand>
       <main className="mx-auto w-full max-w-7xl flex-1 px-4 pb-14 pt-6 sm:px-6">
         <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
-          <h1 className="font-display text-4xl font-extrabold leading-tight sm:text-5xl">Administrare</h1>
+          <h1 className="font-display text-4xl font-semibold leading-tight sm:text-5xl">Administrare</h1>
           <Button variant="outline" className="bg-white" onClick={() => void load()} disabled={loading}>
             {loading ? <Loader2 className="animate-spin" aria-hidden /> : <RefreshCw aria-hidden />}
             Reîmprospătează

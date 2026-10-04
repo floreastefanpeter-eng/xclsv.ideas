@@ -113,7 +113,7 @@ export function CameraView({
               </span>
               {privacy?.status === "active" ? (
                 <span className="inline-flex items-center gap-1 rounded-full bg-black/60 px-3 py-1.5 text-sm font-bold">
-                  <ShieldCheck className="size-4 text-sem-inteles" aria-hidden />
+                  <ShieldCheck className="size-4 text-white" aria-hidden />
                   {privacy.registered
                     ? `${privacy.studentFound ? "Elev recunoscut" : "Elevul nu e în cadru"} · ${privacy.blurred} fețe estompate`
                     : `${privacy.blurred} fețe estompate (fără înregistrare)`}
@@ -127,7 +127,7 @@ export function CameraView({
           </div>
         ) : null}
         {status === "ready" && hint ? (
-          <p className="absolute inset-x-3 bottom-3 rounded-xl bg-sem-intrebare px-3 py-2 text-center font-bold text-ink" role="status" aria-live="polite">
+          <p className="absolute inset-x-3 bottom-3 rounded-lg bg-ink/90 px-3 py-2 text-center font-semibold text-white" role="status" aria-live="polite">
             {hint}
           </p>
         ) : null}
@@ -137,16 +137,16 @@ export function CameraView({
         <div className="flex items-center gap-3 px-4 py-3">
           <div className="min-w-0 flex-1">
             <p className="text-sm font-bold text-white/60">Semn detectat</p>
-            <p className="truncate font-display text-2xl font-extrabold" aria-live="polite">
+            <p className="truncate font-display text-2xl font-semibold" aria-live="polite">
               {label ?? "—"}
             </p>
           </div>
           <div className="w-28 shrink-0 text-right">
             <p className="text-sm font-bold text-white/60">Încredere</p>
-            <p className="text-2xl font-black tabular-nums">{Math.round(confidence * 100)}%</p>
+            <p className="text-2xl font-semibold tabular-nums">{Math.round(confidence * 100)}%</p>
             <div className="mt-1 h-2 overflow-hidden rounded-full bg-white/15" aria-hidden>
               <div
-                className={cn("h-full rounded-full", confidence >= 0.71 ? "bg-sem-inteles" : "bg-sem-intrebare")}
+                className={cn("h-full rounded-full", confidence >= 0.71 ? "bg-white" : "bg-prof-line")}
                 style={{ width: `${Math.round((stability ?? confidence) * 100)}%` }}
               />
             </div>

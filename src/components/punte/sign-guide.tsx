@@ -67,7 +67,7 @@ export function SignGuide({
 
   return (
     <section aria-labelledby="ghid-semne" className={cn("rounded-xl bg-white p-4 border border-border", className)}>
-      <h2 id="ghid-semne" className="mb-1 flex items-center gap-2 font-display text-xl font-extrabold">
+      <h2 id="ghid-semne" className="mb-1 flex items-center gap-2 font-display text-xl font-semibold">
         <BookOpen className="size-5" aria-hidden />
         Ghidul semnelor
       </h2>

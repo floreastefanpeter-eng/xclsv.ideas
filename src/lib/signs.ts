@@ -178,11 +178,11 @@ export function phraseFor(sign: SignDef, terms: string[]): { text: string; fromD
 }
 
 export const SEMAFOR_META: Record<SemaforState, { label: string; color: string; short: string }> = {
-  neutru: { label: "În așteptare", color: "#8A96AB", short: "Neutru" },
+  neutru: { label: "În așteptare", color: "#8A8A8A", short: "Neutru" },
   semneaza: { label: "Semnează…", color: "#1747C4", short: "Semnează" },
   intrebare: { label: "Vrea să intervină", color: "#F2A100", short: "Întrebare" },
   inteles: { label: "A înțeles", color: "#13803F", short: "A înțeles" },
-  neinteles: { label: "Nu a înțeles", color: "#D4141C", short: "Nu a înțeles" },
+  neinteles: { label: "Nu a înțeles", color: "#D7262B", short: "Nu a înțeles" },
 };
 
 export const BUZZ_META: Record<BuzzKind, { label: string; pattern: number[] }> = {

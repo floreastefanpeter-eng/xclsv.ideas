@@ -42,7 +42,7 @@ export default async function JoinPage({ params }: PageProps<"/j/[code]">) {
         </p>
       </StationBand>
       <main className="mx-auto flex w-full max-w-xl flex-1 flex-col px-4 py-8">
-        <h1 className="font-display text-4xl font-extrabold sm:text-5xl">Ce ecran e acesta?</h1>
+        <h1 className="font-display text-4xl font-semibold sm:text-5xl">Ce ecran e acesta?</h1>
         <p className="mt-2 text-lg text-muted-foreground">Alege o stație de pe linia lecției.</p>
         <nav aria-label="Alege ecranul" className="mt-6">
           <ol className="flex flex-col">

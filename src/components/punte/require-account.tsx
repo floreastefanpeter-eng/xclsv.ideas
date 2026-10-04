@@ -38,7 +38,7 @@ export function RequireAccount({
     return (
       <main className="flex min-h-dvh flex-1 items-center justify-center p-6">
         <div className="max-w-md rounded-xl border-2 border-amber bg-white p-6 shadow-lg" role="alert">
-          <h1 className="mb-2 flex items-center gap-2 font-display text-2xl font-extrabold">
+          <h1 className="mb-2 flex items-center gap-2 font-display text-2xl font-semibold">
             <TriangleAlert className="size-7 text-amber" aria-hidden />
             {role === "teacher" ? "Ecranul profesorului" : role === "admin" ? "Administrare" : "Ecranul elevului"}
           </h1>

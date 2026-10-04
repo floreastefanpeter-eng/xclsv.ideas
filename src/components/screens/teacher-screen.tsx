@@ -275,9 +275,9 @@ function TeacherLesson({ code, profile }: { code: string; profile: Profile }) {
         <div className="flex min-w-0 items-center gap-3">
           <p className="min-w-0 truncate">
             <span className="block truncate text-lg font-bold leading-tight">{lesson.title}</span>
-            <span className="block truncate text-sm text-white/70">{lesson.subject}</span>
+            <span className="block truncate text-sm text-muted-foreground">{lesson.subject}</span>
           </p>
-          <span className="code-cells hidden rounded bg-white/10 px-2.5 py-1.5 text-xl sm:inline" aria-label={`Codul lecției ${code.split("").join(" ")}`}>
+          <span className="code-cells hidden rounded-md border border-ink px-2.5 py-1 text-lg sm:inline" aria-label={`Codul lecției ${code.split("").join(" ")}`}>
             {lesson.code}
           </span>
         </div>
@@ -312,7 +312,7 @@ function TeacherLesson({ code, profile }: { code: string; profile: Profile }) {
             {alert ? (
               <div className="flex flex-col gap-3 rounded-lg bg-white p-4 text-ink sm:flex-row sm:items-center" role="alert">
                 <Bell className="size-8 shrink-0 text-prof" aria-hidden />
-                <p className="flex-1 font-display text-2xl font-extrabold">{alert.text}</p>
+                <p className="flex-1 font-display text-2xl font-semibold">{alert.text}</p>
                 <Button size="lg" onClick={acknowledge} className="bg-ink hover:bg-ink/85">
                   <Eye aria-hidden />
                   Am văzut
@@ -351,7 +351,7 @@ function TeacherLesson({ code, profile }: { code: string; profile: Profile }) {
                 <Button
                   size="xl"
                   onClick={() => (micOn ? mic.stop() : mic.start())}
-                  className={cn("hidden w-full lg:inline-flex", micOn ? "bg-ink hover:bg-ink/90" : "bg-prof hover:bg-prof-dark")}
+                  className={cn("hidden w-full lg:inline-flex", micOn ? "bg-ink hover:bg-ink/90" : "bg-prof hover:bg-ink")}
                   aria-pressed={micOn}
                 >
                   {micOn ? <MicOff aria-hidden /> : <Mic aria-hidden />}
@@ -464,7 +464,7 @@ function TeacherLesson({ code, profile }: { code: string; profile: Profile }) {
           <Button
             size="xl"
             onClick={() => (micOn ? mic.stop() : mic.start())}
-            className={cn("w-full", micOn ? "bg-ink hover:bg-ink/90" : "bg-prof hover:bg-prof-dark")}
+            className={cn("w-full", micOn ? "bg-ink hover:bg-ink/90" : "bg-prof hover:bg-ink")}
             aria-pressed={micOn}
           >
             {micOn ? <MicOff aria-hidden /> : <Mic aria-hidden />}

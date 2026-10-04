@@ -162,7 +162,7 @@ export default function DeskScreen({ code }: { code: string }) {
   return (
     <div className="dark-surface flex min-h-dvh flex-1 flex-col bg-night text-white">
       <BuzzBanner buzz={buzz} />
-      <StationBand logoHref={`/j/${lesson.code}`} sticky={false}>
+      <StationBand dark logoHref={`/j/${lesson.code}`} sticky={false}>
         <div className="flex min-w-0 items-center gap-4">
           <p className="hidden min-w-0 truncate text-lg font-bold md:block">
             {lesson.subject} · {lesson.title}
@@ -232,7 +232,7 @@ export default function DeskScreen({ code }: { code: string }) {
                 >
                   <DeskRail latest={latest} />
                   <div className="min-w-0 pb-5">
-                  <p lang={tr ? lang : "ro"} className={cn("font-display font-extrabold leading-[1.08]", latest ? sz.now : cn(sz.before, "text-white/80"))}>
+                  <p lang={tr ? lang : "ro"} className={cn("font-display font-bold leading-[1.08]", latest ? sz.now : cn(sz.before, "text-white/80"))}>
                     {tr ?? m.text}
                   </p>
                   {translating ? (
@@ -252,7 +252,7 @@ export default function DeskScreen({ code }: { code: string }) {
                   <Mic className="live-dot size-5" aria-hidden />
                   Profesorul vorbește…
                 </p>
-                <p lang="ro" dir="ltr" className={cn("font-display font-extrabold leading-[1.08] text-white/85", sz.now)}>
+                <p lang="ro" dir="ltr" className={cn("font-display font-bold leading-[1.08] text-white/85", sz.now)}>
                   {interim}
                 </p>
                 </div>
@@ -263,7 +263,7 @@ export default function DeskScreen({ code }: { code: string }) {
             <p className="mt-6 flex flex-wrap items-center gap-x-3 gap-y-1 rounded-lg bg-elev/25 px-4 py-3 text-lg font-bold" role="status">
               {seen ? (
                 <span className="inline-flex items-center gap-2 text-white">
-                  <Eye className="size-5 text-sem-inteles" aria-hidden />
+                  <Eye className="size-5 text-white" aria-hidden />
                   Profesorul a văzut
                 </span>
               ) : null}

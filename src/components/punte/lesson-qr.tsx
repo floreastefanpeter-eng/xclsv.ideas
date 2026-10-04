@@ -19,7 +19,7 @@ export function LessonQr({ code, size = 220, className }: { code: string; size?:
       </div>
       <p className="text-center">
         <span className="block text-sm font-bold text-muted-foreground">Codul lecției</span>
-        <span className="font-mono text-4xl font-black tracking-[0.25em]" aria-label={code.split("").join(" ")}>
+        <span className="font-mono text-4xl font-semibold tracking-[0.25em]" aria-label={code.split("").join(" ")}>
           {code}
         </span>
       </p>

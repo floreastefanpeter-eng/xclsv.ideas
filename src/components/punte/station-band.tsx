@@ -1,9 +1,12 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { Logo } from "./logo";
 
 /**
- * Banda stației: bara de sus, bleumarin, ca indicatorul de la intrarea în metrou.
- * Stânga: marca. Centru: unde ești (lecția). Dreapta: contul / starea conexiunii.
+ * Bara de navigație: albă, lipită sus; la derulare primește un blur discret și se micșorează puțin.
+ * Varianta `dark` (negru) e pentru ecranele de afișare: masa elevului și proiectorul.
  */
 export function StationBand({
   children,
@@ -11,30 +14,56 @@ export function StationBand({
   logoHref = "/",
   className,
   sticky = true,
+  dark = false,
 }: {
   children?: React.ReactNode;
   right?: React.ReactNode;
   logoHref?: string;
   className?: string;
   sticky?: boolean;
+  dark?: boolean;
 }) {
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    if (!sticky) return;
+    const onScroll = () => setScrolled(window.scrollY > 8);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [sticky]);
+
   return (
-    <header className={cn("dark-surface z-40 bg-ink text-white", sticky && "sticky top-0", className)}>
-      <div className="mx-auto flex min-h-16 w-full max-w-7xl items-center gap-3 px-4 py-2 sm:gap-5 sm:px-6">
-        <Logo dark href={logoHref} className="shrink-0" />
+    <header
+      data-scrolled={scrolled || undefined}
+      className={cn(
+        "z-40 border-b transition-[background-color,border-color,box-shadow] duration-300",
+        sticky && "sticky top-0",
+        dark
+          ? "dark-surface border-white/10 bg-ink text-white"
+          : cn(
+              "bg-white text-ink",
+              scrolled
+                ? "border-border bg-white/80 shadow-[0_8px_24px_-20px_rgba(10,10,10,0.35)] backdrop-blur-md backdrop-saturate-150"
+                : "border-transparent",
+            ),
+        className,
+      )}
+    >
+      <div
+        className={cn(
+          "mx-auto flex w-full max-w-7xl items-center gap-3 px-4 transition-[min-height] duration-300 sm:gap-6 sm:px-6",
+          scrolled ? "min-h-14" : "min-h-16 sm:min-h-[4.5rem]",
+        )}
+      >
+        <Logo dark={dark} href={logoHref} />
         <div className="min-w-0 flex-1">{children}</div>
-        {right ? <div className="flex shrink-0 items-center gap-2">{right}</div> : null}
-      </div>
-      {/* linia de sub bandă: roșu → albastru, cele două linii ale puntei */}
-      <div aria-hidden className="flex h-1.5">
-        <span className="flex-1 bg-prof" />
-        <span className="flex-1 bg-elev" />
+        {right ? <div className="flex shrink-0 items-center gap-1 sm:gap-2">{right}</div> : null}
       </div>
     </header>
   );
 }
 
-/** Plăcuța de secțiune: titlul pe fond plin, majuscule condensate. */
+/** Titlu de secțiune scurt, cu o etichetă opțională (fără bandă colorată). */
 export function Plate({
   tone = "ink",
   children,
@@ -50,14 +79,8 @@ export function Plate({
   as?: "h1" | "h2" | "h3" | "p";
   id?: string;
 }) {
-  const tones = {
-    ink: "bg-ink text-white",
-    prof: "bg-prof text-white",
-    elev: "bg-elev text-white",
-    amber: "bg-amber text-ink",
-  } as const;
   return (
-    <Tag id={id} className={cn("plate inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-lg leading-none", tones[tone], className)}>
+    <Tag id={id} className={cn("plate inline-flex items-center gap-2 text-lg leading-none", tone === "prof" || tone === "amber" ? "text-prof" : "text-ink", className)}>
       {icon}
       {children}
     </Tag>
@@ -65,8 +88,8 @@ export function Plate({
 }
 
 /**
- * Panoul-indicator: banda colorată de sus (ca plăcuța unei stații) lipită de conținut.
- * Înlocuiește cardurile albe „moi”.
+ * Secțiune cu titlu: o linie fină deasupra, titlul și acțiunea pe un rând, apoi conținutul.
+ * `tone="prof"` = linia de sus roșie (zona profesorului / acțiunea principală).
  */
 export function Panel({
   tone = "ink",
@@ -89,19 +112,24 @@ export function Panel({
   bodyClassName?: string;
   children: React.ReactNode;
 }) {
-  const strip = { ink: "bg-ink text-white", prof: "bg-prof text-white", elev: "bg-elev text-white" } as const;
   return (
     <section
       aria-labelledby={id}
       className={cn(
-        "overflow-hidden rounded-md border",
-        dark ? "border-white/10 bg-white/[0.05] text-white" : "border-steel/80 bg-white",
+        "overflow-hidden rounded-lg border",
+        dark ? "border-white/12 bg-white/[0.04] text-white" : "border-border bg-white",
         className,
       )}
     >
-      <div className={cn("flex min-h-12 items-center justify-between gap-2 px-4 py-2", dark && tone === "ink" ? "bg-ink-2 text-white" : strip[tone])}>
-        <h2 id={id} className="plate flex items-center gap-2 text-xl leading-none">
-          {icon}
+      <div
+        className={cn(
+          "flex min-h-13 items-center justify-between gap-2 border-b px-4 py-2 sm:px-5",
+          dark ? "border-white/10" : "border-border",
+          tone === "prof" && "shadow-[inset_0_2px_0_0_var(--color-prof)]",
+        )}
+      >
+        <h2 id={id} className="plate flex items-center gap-2 text-[1.05rem] leading-none">
+          {icon ? <span className={cn("flex", tone === "prof" ? "text-prof" : dark ? "text-white/70" : "text-ink/60")}>{icon}</span> : null}
           {title}
         </h2>
         {action}

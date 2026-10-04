@@ -18,7 +18,7 @@ export function ErrorScreen({ message, dark }: { message: string; dark?: boolean
   return (
     <main className={cn("flex min-h-dvh flex-1 items-center justify-center p-6", dark && "bg-night text-white")}>
       <div className="max-w-md rounded-xl border-2 border-sem-neinteles bg-white p-6 text-ink shadow-lg" role="alert">
-        <h1 className="mb-2 flex items-center gap-2 font-display text-2xl font-extrabold">
+        <h1 className="mb-2 flex items-center gap-2 font-display text-2xl font-semibold">
           <TriangleAlert className="size-7 text-sem-neinteles" aria-hidden />
           Nu am putut deschide lecția
         </h1>

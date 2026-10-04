@@ -41,6 +41,7 @@ export interface StopProps {
 const RAIL = { prof: "bg-prof", elev: "bg-elev", system: "", live: "" } as const;
 const RAIL_DARK = { prof: "bg-prof-line", elev: "bg-elev-line", system: "", live: "" } as const;
 const RING = { prof: "border-prof", elev: "border-elev", system: "border-sem-neutru", live: "border-prof" } as const;
+const RING_DARK = { prof: "border-prof-line", elev: "border-white", system: "border-white/40", live: "border-prof-line" } as const;
 
 /** O stație pe linie: ora (coloană fixă), linia cu punctul, apoi cine și ce a spus. */
 export function RouteStop({ line, time: t, who, icon, chips, text, translation, alert, size = "md", dark, animate, srWho }: StopProps) {
@@ -65,13 +66,13 @@ export function RouteStop({ line, time: t, who, icon, chips, text, translation, 
           <span className={cn("absolute inset-y-0 w-1", rail)} />
         )}
         <span
-          style={{ ["--station" as string]: line === "elev" ? "#1747C4" : "#D4141C" }}
+          style={{ ["--station" as string]: line === "elev" ? "var(--color-elev)" : "var(--color-prof)" }}
           className={cn(
             "relative z-10 mt-1.5 rounded-full border-4",
             system ? "size-3.5 border-[3px]" : "size-5",
             size === "xl" && !system && "sm:size-7 sm:border-[6px]",
-            RING[line],
-            alert ? (line === "elev" ? "bg-elev" : "bg-prof") : dark ? "bg-ink" : "bg-white",
+            dark ? RING_DARK[line] : RING[line],
+            alert ? (line === "elev" ? (dark ? "bg-white" : "bg-elev") : "bg-prof") : dark ? "bg-ink" : "bg-white",
             live && "live-dot",
             animate && !system && "station-arrive",
           )}

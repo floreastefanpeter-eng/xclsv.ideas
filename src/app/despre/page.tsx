@@ -24,7 +24,7 @@ const SOURCES = [
 function Section({ id, title, children }: { id: string; title: string; children: React.ReactNode }) {
   return (
     <section aria-labelledby={id} className="rounded-xl bg-white p-5 border border-border sm:p-7">
-      <h2 id={id} className="mb-3 font-display text-2xl font-extrabold sm:text-3xl">
+      <h2 id={id} className="mb-3 font-display text-2xl font-semibold sm:text-3xl">
         {title}
       </h2>
       <div className="space-y-3 text-lg leading-relaxed text-ink/85">{children}</div>
@@ -35,14 +35,14 @@ function Section({ id, title, children }: { id: string; title: string; children:
 export default function AboutPage() {
   return (
     <>
-    <StationBand right={<Link href="/" className={cn(buttonVariants({ variant: "ghost" }), "text-white hover:bg-white/10 hover:text-white")}>
+    <StationBand right={<Link href="/" className={cn(buttonVariants({ variant: "ghost" }), "")}>
           Încearcă SIGNals
           <ArrowRight aria-hidden />
         </Link>} />
     <main className="mx-auto flex w-full max-w-4xl flex-1 flex-col gap-5 px-4 pb-16 pt-6">
 
       <div className="py-6">
-        <h1 className="font-display text-4xl font-extrabold leading-tight sm:text-5xl">
+        <h1 className="font-display text-4xl font-semibold leading-tight sm:text-5xl">
           Un mediator între elevul surd și clasa care vorbește.
         </h1>
       </div>

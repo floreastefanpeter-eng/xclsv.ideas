@@ -165,7 +165,7 @@ export function CreateLessonForm() {
         </p>
       ) : null}
 
-      <Button type="submit" size="lg" className="w-full bg-prof hover:bg-prof-dark" disabled={busy}>
+      <Button type="submit" size="lg" className="w-full bg-prof hover:bg-ink" disabled={busy}>
         {busy ? <Loader2 className="animate-spin" aria-hidden /> : null}
         Pornește lecția
       </Button>

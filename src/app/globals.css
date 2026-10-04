@@ -7,10 +7,10 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-atkinson);
-  --font-heading: var(--font-archivo);
-  --font-display: var(--font-archivo);
-  --font-mono: var(--font-archivo);
+  --font-sans: var(--font-geist);
+  --font-heading: var(--font-geist);
+  --font-display: var(--font-geist);
+  --font-mono: var(--font-geist-mono);
   --color-ring: var(--ring);
   --color-input: var(--input);
   --color-border: var(--border);
@@ -36,61 +36,63 @@
   --radius-4xl: calc(var(--radius) * 2.4);
 
   /*
-   * SIGNals — semnalistica metroului.
-   * Linia roșie = profesorul. Linia albastră = elevul. Puntea = stația de corespondență.
+   * SIGNals — roșu, alb, negru.
+   * Roșu = profesorul și acțiunile principale. Negru = elevul, textul, navigația. Alb = suprafața.
+   * (Numele „elev” / „prof” rămân în cod: sunt rolurile, nu culorile.)
    */
-  --color-prof: #d4141c;
-  --color-prof-dark: #a30e14;
-  --color-prof-soft: #fde7e7;
-  --color-prof-line: #ff5a5f;
-  --color-elev: #1747c4;
-  --color-elev-dark: #0e2f8a;
-  --color-elev-soft: #e3eafb;
-  --color-elev-line: #6c93ff;
-  --color-ink: #0d1626;
-  --color-ink-2: #1b2740;
-  --color-ink-3: #2a3856;
-  --color-night: #0d1626;
-  --color-paper: #f2f4f8;
-  --color-steel: #c9d1de;
-  --color-amber: #f2a100;
+  --color-prof: #d7262b;
+  --color-prof-dark: #a81d21;
+  --color-prof-soft: #fcebeb;
+  --color-prof-line: #ff5a55;
+  --color-elev: #111111;
+  --color-elev-dark: #000000;
+  --color-elev-soft: #f2f2f2;
+  --color-elev-line: #ffffff;
+  --color-ink: #0a0a0a;
+  --color-ink-2: #171717;
+  --color-ink-3: #2e2e2e;
+  --color-night: #0a0a0a;
+  --color-paper: #fafafa;
+  --color-steel: #d4d4d4;
+  /* „Atenție” folosește roșul mărcii; galbenul rămâne doar în semafor. */
+  --color-amber: #d7262b;
 
-  /* Semaforul — fiecare culoare are mereu o etichetă text. */
+  /* Semaforul — singura excepție de culoare: informație, nu decor. Mereu cu etichetă text. */
   --color-sem-semneaza: #1747c4;
   --color-sem-intrebare: #f2a100;
   --color-sem-inteles: #13803f;
-  --color-sem-neinteles: #d4141c;
-  --color-sem-neutru: #8a96ab;
+  --color-sem-neinteles: #d7262b;
+  --color-sem-neutru: #8a8a8a;
 
-  /* Mesaje de stare */
-  --color-warn-soft: #fff1cc;
-  --color-warn-ink: #6b4300;
-  --color-danger-soft: #fde7e7;
-  --color-danger-ink: #8a0b10;
-  --color-ok-soft: #dcf3e4;
-  --color-ok-ink: #0b4d26;
+  /* Mesaje de stare: neutre, cu roșu doar pentru erori. */
+  --color-warn-soft: #f4f4f4;
+  --color-warn-ink: #111111;
+  --color-danger-soft: #fcebeb;
+  --color-danger-ink: #8e1418;
+  --color-ok-soft: #f2f2f2;
+  --color-ok-ink: #111111;
 }
 
 :root {
-  --background: #f2f4f8;
-  --foreground: #0d1626;
+  --background: #ffffff;
+  --foreground: #0a0a0a;
   --card: #ffffff;
-  --card-foreground: #0d1626;
+  --card-foreground: #0a0a0a;
   --popover: #ffffff;
-  --popover-foreground: #0d1626;
-  --primary: #1747c4;
+  --popover-foreground: #0a0a0a;
+  --primary: #d7262b;
   --primary-foreground: #ffffff;
-  --secondary: #e4e8ef;
-  --secondary-foreground: #0d1626;
-  --muted: #e4e8ef;
-  --muted-foreground: #46526a;
-  --accent: #e3eafb;
-  --accent-foreground: #0d1626;
-  --destructive: #d4141c;
-  --border: #d3d9e3;
-  --input: #a9b4c6;
-  --ring: #1747c4;
-  --radius: 0.375rem;
+  --secondary: #f2f2f2;
+  --secondary-foreground: #0a0a0a;
+  --muted: #f4f4f4;
+  --muted-foreground: #5c5c5c;
+  --accent: #f4f4f4;
+  --accent-foreground: #0a0a0a;
+  --destructive: #d7262b;
+  --border: #e5e5e5;
+  --input: #c7c7c7;
+  --ring: #0a0a0a;
+  --radius: 0.5rem;
 }
 
 @layer base {
@@ -99,7 +101,8 @@
   }
   body {
     @apply bg-background text-foreground;
-    caret-color: var(--color-elev);
+    caret-color: var(--color-prof);
+    font-feature-settings: "ss01", "cv11";
   }
   html {
     @apply font-sans;
@@ -109,9 +112,9 @@
   h2,
   h3,
   .font-display {
-    font-family: var(--font-archivo), system-ui, sans-serif;
-    font-stretch: 82%;
-    letter-spacing: -0.005em;
+    font-family: var(--font-geist), system-ui, sans-serif;
+    font-weight: 650;
+    letter-spacing: -0.03em;
     text-wrap: balance;
   }
   :focus-visible {
@@ -119,7 +122,7 @@
     outline-offset: 2px;
   }
   ::selection {
-    background: color-mix(in srgb, var(--color-elev) 22%, transparent);
+    background: color-mix(in srgb, var(--color-prof) 18%, transparent);
     color: inherit;
   }
   a {
@@ -138,28 +141,77 @@
     caret-color: #fff;
   }
   .dark-surface ::selection {
-    background: color-mix(in srgb, var(--color-elev-line) 40%, transparent);
+    background: color-mix(in srgb, var(--color-prof-line) 35%, transparent);
   }
 }
 
-/* Plăcuța de stație: litere condensate, majuscule, ca pe indicatoarele metroului. */
 @layer components {
+  /* Titlu compact, puternic: greutate și strângere, nu majuscule. */
   .plate {
-    font-family: var(--font-archivo), system-ui, sans-serif;
-    font-stretch: 75%;
-    font-weight: 800;
+    font-family: var(--font-geist), system-ui, sans-serif;
+    font-weight: 650;
+    letter-spacing: -0.025em;
+  }
+  /* Eticheta mică de metadate: majuscule rare, spațiate. */
+  .label {
+    font-size: 0.75rem;
+    line-height: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
-    letter-spacing: 0.02em;
   }
 }
 
-/* Codul lecției: caractere fixe, ca pe tabela de plecări. */
+/* Codul lecției și orele: cifre fixe, monospațiate. */
 .code-cells {
-  font-family: var(--font-archivo), system-ui, sans-serif;
-  font-stretch: 75%;
-  font-weight: 800;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-weight: 600;
   font-variant-numeric: tabular-nums;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.12em;
+}
+
+/* Apariția la derulare: vizibil implicit; ascuns doar după ce JS a pornit observatorul. */
+.reveal-ready .reveal:not(.is-in) {
+  opacity: 0;
+  transform: translateY(14px);
+}
+.reveal {
+  transition:
+    opacity 520ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 520ms cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+/* Undă de voce: bare care pulsează, decalate. */
+@keyframes wave {
+  0%,
+  100% {
+    transform: scaleY(0.35);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+.wave > span {
+  transform-origin: center;
+  animation: wave 900ms ease-in-out infinite;
+}
+
+/* Cursorul transcrierii live. */
+@keyframes caret {
+  50% {
+    opacity: 0;
+  }
+}
+.caret::after {
+  content: "";
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  margin-left: 2px;
+  vertical-align: -0.12em;
+  background: currentColor;
+  animation: caret 1s steps(1) infinite;
 }
 
 /* LED-ul insignei */
@@ -292,4 +344,14 @@
 /* Segmentul de linie „în construcție”: fraza pe care profesorul o spune acum. */
 .rail-dashed {
   background: repeating-linear-gradient(to bottom, var(--color-prof-line) 0 8px, transparent 8px 14px);
+}
+
+/* Semnalul care circulă între profesor și dispozitivul elevului. */
+@keyframes signal {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(300%);
+  }
 }

@@ -22,7 +22,7 @@ function Stars({ value, onChange, label }: { value: number; onChange: (v: number
             aria-label={`${n} din 5`}
             aria-pressed={value === n}
           >
-            <Star className={cn("size-8", n <= value ? "fill-sem-intrebare text-sem-intrebare" : "text-ink/30")} aria-hidden />
+            <Star className={cn("size-8", n <= value ? "fill-prof text-prof" : "text-ink/30")} aria-hidden />
           </button>
         ))}
       </div>
@@ -72,7 +72,7 @@ export function FeedbackForm({ lessonId, role }: { lessonId: string; role: Exclu
 
   return (
     <form onSubmit={submit} className="space-y-3 rounded-xl border-2 border-ink/10 bg-white p-5">
-      <h2 className="font-display text-2xl font-extrabold">Cum a fost lecția?</h2>
+      <h2 className="font-display text-2xl font-semibold">Cum a fost lecția?</h2>
       <Stars value={rating} onChange={setRating} label="Nota generală" />
       <Stars
         value={understood}

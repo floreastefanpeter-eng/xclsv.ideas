@@ -12,7 +12,7 @@ export interface Station {
   here?: boolean;
 }
 
-const COLOR = { prof: "#D4141C", elev: "#1747C4", ink: "#8A96AB" } as const;
+const COLOR = { prof: "var(--color-prof)", elev: "var(--color-elev)", ink: "var(--color-sem-neutru)" } as const;
 const DOT = {
   prof: "border-prof bg-prof",
   elev: "border-elev bg-elev",
@@ -20,13 +20,13 @@ const DOT = {
 } as const;
 
 /** Linia continuă din spatele stațiilor: fiecare segment are culoarea liniei care pleacă din stație. */
-function lineGradient(stations: Station[]) {
+function lineGradient(stations: Station[], dark?: boolean) {
   const n = stations.length;
   const stops: string[] = [];
   for (let i = 0; i < n - 1; i++) {
     const a = stations[i];
     const b = stations[i + 1];
-    const color = a.line === "prof" ? COLOR.prof : b.line === "ink" ? COLOR.ink : COLOR.elev;
+    const color = a.line === "prof" ? COLOR.prof : b.line === "ink" ? COLOR.ink : dark ? "var(--color-elev-line)" : COLOR.elev;
     const from = (i / (n - 1)) * 100;
     const to = ((i + 1) / (n - 1)) * 100;
     stops.push(`${color} ${from}%`, `${color} ${to}%`);
@@ -68,7 +68,7 @@ export function LineMap({
         <span
           aria-hidden
           className="absolute top-[8px] h-1 rounded-full"
-          style={{ left: `${50 / n}%`, right: `${50 / n}%`, background: lineGradient(stations) }}
+          style={{ left: `${50 / n}%`, right: `${50 / n}%`, background: lineGradient(stations, dark) }}
         />
         {stations.map((s) => (
           <li key={s.key} className="relative flex min-w-0 flex-1 flex-col items-center gap-1">
@@ -76,7 +76,7 @@ export function LineMap({
               aria-hidden
               className={cn(
                 "relative size-5 rounded-full border-4 transition-colors duration-300",
-                s.on ? DOT[s.line] : dark ? "border-white/50 bg-ink" : "border-steel bg-white",
+                s.on ? (dark && s.line === "elev" ? "border-white bg-white" : DOT[s.line]) : dark ? "border-white/50 bg-ink" : "border-steel bg-white",
                 s.here && (dark ? "ring-2 ring-white ring-offset-2 ring-offset-ink" : "ring-2 ring-ink ring-offset-2 ring-offset-background"),
               )}
             />

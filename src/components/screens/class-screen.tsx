@@ -48,9 +48,9 @@ export default function ClassScreen({ code }: { code: string }) {
 
   return (
     <div className="dark-surface flex min-h-dvh flex-1 flex-col bg-night text-white">
-      <StationBand logoHref={`/j/${lesson.code}`} sticky={false}>
+      <StationBand dark logoHref={`/j/${lesson.code}`} sticky={false}>
         <div className="flex min-w-0 items-center gap-5">
-          <h1 className="min-w-0 truncate font-display text-2xl font-extrabold leading-tight sm:text-4xl">
+          <h1 className="min-w-0 truncate font-display text-2xl font-bold leading-tight sm:text-4xl">
             {lesson.title}
             <span className="ml-3 hidden text-lg font-bold text-white/60 sm:inline">{lesson.subject}</span>
           </h1>

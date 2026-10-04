@@ -49,7 +49,7 @@ export function LessonStatsPanel({
       className={cn("rounded-xl border-2 p-5", dark ? "border-white/20 text-white" : "border-ink/10 bg-white/60", className)}
     >
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-        <h2 id="stats-title" className="flex items-center gap-2 font-display text-2xl font-extrabold">
+        <h2 id="stats-title" className="flex items-center gap-2 font-display text-2xl font-semibold">
           <FlaskConical className={cn("size-6", dark ? "text-elev-line" : "text-elev")} aria-hidden />
           Statistici și ipoteze
         </h2>
@@ -64,7 +64,7 @@ export function LessonStatsPanel({
         {tiles.map(([label, value]) => (
           <div key={label} className={cn("rounded-lg p-3", dark ? "bg-white/5" : "bg-white")}>
             <dt className={cn("text-sm font-bold", dark ? "text-white/70" : "text-muted-foreground")}>{label}</dt>
-            <dd className="font-display text-3xl font-extrabold tabular-nums">{value}</dd>
+            <dd className="font-display text-3xl font-semibold tabular-nums">{value}</dd>
           </div>
         ))}
       </dl>
@@ -76,7 +76,7 @@ export function LessonStatsPanel({
               <Icon
                 className={cn(
                   "mt-0.5 size-6 shrink-0",
-                  h.passed === null ? "text-sem-neutru" : h.passed ? "text-sem-inteles" : "text-sem-neinteles",
+                  h.passed === null ? "text-sem-neutru" : h.passed ? "text-ink" : "text-prof",
                 )}
                 aria-hidden
               />
