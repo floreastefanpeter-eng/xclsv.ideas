@@ -38,7 +38,8 @@ Mediere bidirecțională în clasă, nu doar o aplicație de subtitrare: recunoa
 ## Brand Commitments
 
 - Numele „SIGNals”, sloganul „Elevul semnează. Clasa înțelege.”
-- Temă de culoare: **roșu și albastru** (cerință a utilizatorului).
+- Identitate: **roșu + alb + negru** (cerință a utilizatorului). Roșu = acțiuni și stări importante, negru = text și navigație, alb = fundal. Singura excepție: cele 4 culori ale semaforului elevului (informație funcțională, mereu cu etichetă).
+- Logo-ul oficial (mâinile și unda) din `public/brand/`; numele se scrie exact „SIGNals”.
 - Fiecare culoare de semafor este însoțită mereu de o etichetă text. Iconițe `lucide-react`, fără emoji.
 - Creditul modelului ASL Realtime Transformer (Ceyda Akın, CC BY 4.0) rămâne vizibil.
 

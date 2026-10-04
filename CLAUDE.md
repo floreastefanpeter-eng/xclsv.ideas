@@ -48,7 +48,7 @@ Lint is strict about React Compiler rules: no synchronous `setState` in effect b
 
 ## Conventions
 
-- Visual world: **metro wayfinding** (`PRODUCT.md`, `.impeccable/surfaces/src-app.md`). Red line = teacher (`prof`), blue line = student (`elev`), navy `ink` station band (`StationBand`), condensed Archivo caps via `.plate`, conversations as `RouteStop`s, devices as `LineMap` stations. No eyebrow kickers above headings, no side-border accents.
+- Visual identity: **red + white + black** (Geist / Geist Mono). Red (`prof`) = teacher and primary actions, black (`elev`/`ink`) = student line, text, navigation; the semafor keeps its 4 status colours as the only exception. Official logo images live in `public/brand/` (`SignalsMark`/`Logo` in `logo.tsx`; dark bars use the app icon). Sections over cards; `.label` for small uppercase metadata; `.reveal` for scroll reveals (visible without JS). No eyebrow kickers above headings, no side-border accents.
 - shadcn/ui uses the **base-nova** style (Base UI primitives, not Radix) and imports `cn` from the `cn` package; button/input sizes were enlarged to ≥44 px. Native `<select>` is used instead of the shadcn Select.
 - Design tokens (`elev`, `prof`, `ink`, `night`, `amber`, status `warn-*`/`danger-*`/`ok-*`, semafor colours `sem-*`) are defined in `src/app/globals.css` — no raw hex in components; every semafor colour is always paired with a text label. Icons come from `lucide-react`, no emoji in the UI.
 - Development-only debug hooks: `globalThis.__punteAsl` (ASL classifier) and `window.__punteFace` (face-api loader).
