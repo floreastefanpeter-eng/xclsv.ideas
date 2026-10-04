@@ -121,6 +121,8 @@ export function useHandTracker(onFrame: (frame: VisionFrame) => void, color = "#
   const onFrameRef = useRef(onFrame);
   const streamRef = useRef<MediaStream | null>(null);
   const rafRef = useRef<number | null>(null);
+  /** Cutiile mâinilor din ultimul cadru (0–1): o „față” găsită în mână nu e o față. */
+  const handBoxesRef = useRef<{ x: number; y: number; width: number; height: number }[]>([]);
 
   useEffect(() => {
     onFrameRef.current = onFrame;
@@ -230,6 +232,23 @@ export function useHandTracker(onFrame: (frame: VisionFrame) => void, color = "#
                   : null;
       setHint((h) => (h === next ? h : next));
 
+      handBoxesRef.current = raw.hands.landmarks.map((hand) => {
+        let x0 = 1,
+          y0 = 1,
+          x1 = 0,
+          y1 = 0;
+        for (const p of hand) {
+          x0 = Math.min(x0, p.x);
+          y0 = Math.min(y0, p.y);
+          x1 = Math.max(x1, p.x);
+          y1 = Math.max(y1, p.y);
+        }
+        // Puțină margine: degetele ies din punctele detectate.
+        const mx = (x1 - x0) * 0.15;
+        const my = (y1 - y0) * 0.15;
+        return { x: x0 - mx, y: y0 - my, width: x1 - x0 + 2 * mx, height: y1 - y0 + 2 * my };
+      });
+
       onFrameRef.current({ hands: r.hands, holistic: r.holistic });
     };
     loop();
@@ -237,7 +256,7 @@ export function useHandTracker(onFrame: (frame: VisionFrame) => void, color = "#
 
   useEffect(() => stop, [stop]);
 
-  return { videoRef, canvasRef, status, error, handsVisible, hint, start, stop };
+  return { videoRef, canvasRef, status, error, handsVisible, hint, start, stop, handBoxesRef };
 }
 
 function drawHands(

@@ -376,7 +376,7 @@ function StudentLesson({
   );
 
   const tracker = useHandTracker(onFrame, "#6C93FF", "holistic");
-  const privacy = useFacePrivacy(tracker.videoRef, tracker.status === "ready", registration);
+  const privacy = useFacePrivacy(tracker.videoRef, tracker.status === "ready", registration, tracker.handBoxesRef);
 
   // Tastele 1–9 (plasa de siguranță) și Esc pentru anulare.
   useEffect(() => {

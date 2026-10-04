@@ -125,7 +125,7 @@ export function deleteRegistration() {
 const BLAZE_FACE_URL =
   "https://storage.googleapis.com/mediapipe-models/face_detector/blaze_face_short_range/float16/1/blaze_face_short_range.tflite";
 
-type FastDetector = (video: HTMLVideoElement, ts: number) => { x: number; y: number; width: number; height: number }[];
+type FastDetector = (video: HTMLVideoElement, ts: number) => { x: number; y: number; width: number; height: number; score: number }[];
 let fastPromise: Promise<FastDetector> | null = null;
 
 export function loadFastFaceDetector(): Promise<FastDetector> {
@@ -146,10 +146,10 @@ export function loadFastFaceDetector(): Promise<FastDetector> {
     return (video, ts) => {
       last = Math.max(last + 1, ts);
       const r = detector.detectForVideo(video, last);
-      return (r.detections ?? [])
-        .map((d) => d.boundingBox)
-        .filter((b): b is NonNullable<typeof b> => !!b)
-        .map((b) => ({ x: b.originX, y: b.originY, width: b.width, height: b.height }));
+      return (r.detections ?? []).flatMap((d) => {
+        const b = d.boundingBox;
+        return b ? [{ x: b.originX, y: b.originY, width: b.width, height: b.height, score: d.categories?.[0]?.score ?? 0 }] : [];
+      });
     };
   })();
   fastPromise.catch(() => {

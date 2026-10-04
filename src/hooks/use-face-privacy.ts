@@ -47,6 +47,8 @@ export function useFacePrivacy(
   videoRef: React.RefObject<HTMLVideoElement | null>,
   active: boolean,
   registration: FaceRegistration | null,
+  /** Cutiile mâinilor (0–1) de la useHandTracker: nu estompăm o mână confundată cu o față. */
+  handBoxesRef?: React.RefObject<{ x: number; y: number; width: number; height: number }[]>,
 ) {
   const privacyCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const [status, setStatus] = useState<PrivacyStatus>("off");
@@ -86,6 +88,14 @@ export function useFacePrivacy(
     const shown = new Map<number, { cx: number; cy: number; rx: number; ry: number }>();
     queueMicrotask(() => setStatus("loading"));
 
+    const handsPx = (video: HTMLVideoElement) =>
+      (handBoxesRef?.current ?? []).map((b) => ({
+        x: b.x * video.videoWidth,
+        y: b.y * video.videoHeight,
+        width: b.width * video.videoWidth,
+        height: b.height * video.videoHeight,
+      }));
+
     const report = (tracks: Track[]) => {
       const blurred = tracks.filter((t) => !t.isStudent).length;
       const studentFound = tracks.some((t) => t.isStudent);
@@ -104,7 +114,7 @@ export function useFacePrivacy(
         try {
           const found = await classifyFaces(video, regRef.current);
           if (cancelled) return;
-          tracker.applyIdentity(found, MATCH_THRESHOLD, performance.now());
+          tracker.applyIdentity(found, MATCH_THRESHOLD, performance.now(), handsPx(video));
           identityReady = true;
         } catch {
           identityFailed = true;
@@ -191,7 +201,7 @@ export function useFacePrivacy(
 
       if (fast) {
         try {
-          tracker.update(fast(video, now), now);
+          tracker.update(fast(video, now), now, handsPx(video));
           lastFastAt = now;
           fastReady = true;
         } catch {
@@ -254,7 +264,7 @@ export function useFacePrivacy(
       clearTimeout(identityTimer);
       tracker.reset();
     };
-  }, [active, videoRef]);
+  }, [active, videoRef, handBoxesRef]);
 
   return { privacyCanvasRef, status, ...summary };
 }

@@ -137,7 +137,7 @@ export default function TrainingScreen() {
   );
 
   const tracker = useHandTracker(onFrame, "#6C93FF", "holistic");
-  const privacy = useFacePrivacy(tracker.videoRef, tracker.status === "ready", registration);
+  const privacy = useFacePrivacy(tracker.videoRef, tracker.status === "ready", registration, tracker.handBoxesRef);
 
   /** Semn cu mișcare: numărătoare inversă, apoi până coboară mâna (cel mult 5 s). */
   const recordMoving = useCallback(

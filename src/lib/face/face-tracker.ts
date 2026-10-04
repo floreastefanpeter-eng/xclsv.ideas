@@ -23,6 +23,22 @@ export interface Track extends Box {
 
 /** Cât timp ținem estomparea pe o față care nu mai e detectată (se poate întoarce sau acoperi). */
 export const TRACK_TTL_MS = 900;
+/** O față nouă începe doar de la acest scor; una deja urmărită se actualizează și sub el. */
+export const SPAWN_MIN_SCORE = 0.6;
+/** După atâta lipsă, identitatea elevului se verifică din nou. */
+const REVERIFY_GAP_MS = 700;
+/** O față care reapare în locul elevului, în acest interval, rămâne a elevului (mâna a trecut prin fața lui). */
+const STUDENT_REAPPEAR_MS = 1200;
+
+/** Ce parte din cutia a este acoperită de b. */
+export function coveredBy(a: Box, b: Box) {
+  const x1 = Math.max(a.x, b.x);
+  const y1 = Math.max(a.y, b.y);
+  const x2 = Math.min(a.x + a.width, b.x + b.width);
+  const y2 = Math.min(a.y + a.height, b.y + b.height);
+  const inter = Math.max(0, x2 - x1) * Math.max(0, y2 - y1);
+  return a.width * a.height > 0 ? inter / (a.width * a.height) : 0;
+}
 
 export function iou(a: Box, b: Box) {
   const x1 = Math.max(a.x, b.x);
@@ -51,9 +67,31 @@ function affinity(track: Box, det: Box) {
 export class FaceTracker {
   tracks: Track[] = [];
   private nextId = 1;
+  /** Unde a fost văzut elevul ultima dată. */
+  private lastStudent: { box: Box; at: number } | null = null;
+
+  /** O față nouă poate fi doar o mână confundată: o ignorăm dacă e mai mult de jumătate în mână. */
+  private inHand(d: Box, hands: Box[]) {
+    return hands.some((h) => coveredBy(d, h) > 0.5);
+  }
+
+  /** Fața nouă apare exact unde era elevul, puțin după: e tot elevul. */
+  private inheritsStudent(d: Box, now: number) {
+    const ls = this.lastStudent;
+    if (!ls || now - ls.at > STUDENT_REAPPEAR_MS) return false;
+    const ratio = d.width / Math.max(1, ls.box.width);
+    return centerDistance(ls.box, d) < 0.5 && ratio > 0.7 && ratio < 1.4;
+  }
+
+  private spawn(d: Box, now: number, checkedAt: number): Track {
+    const isStudent = this.inheritsStudent(d, now);
+    const t = { x: d.x, y: d.y, width: d.width, height: d.height, id: this.nextId++, vx: 0, vy: 0, lastSeen: now, isStudent, checkedAt };
+    this.tracks.push(t);
+    return t;
+  }
 
   /** Detecțiile rapide (fiecare cadru). Întoarce track-urile active. */
-  update(detections: Box[], now: number) {
+  update(detections: (Box & { score?: number })[], now: number, hands: Box[] = []) {
     const unmatched = new Set(this.tracks.map((t) => t.id));
     const pairs: { t: Track; d: Box; score: number }[] = [];
     for (const t of this.tracks) {
@@ -71,7 +109,7 @@ export class FaceTracker {
       usedDet.add(d);
       const dt = Math.max(1, now - t.lastSeen);
       // Fața a lipsit o vreme: altcineva poate fi acum în locul ei. Re-verificăm identitatea.
-      if (dt > 300) t.isStudent = false;
+      if (dt > REVERIFY_GAP_MS) t.isStudent = false;
       const cx = d.x + d.width / 2;
       const cy = d.y + d.height / 2;
       const pcx = t.x + t.width / 2;
@@ -89,10 +127,12 @@ export class FaceTracker {
       t.width = w;
       t.height = h;
       t.lastSeen = now;
+      if (t.isStudent) this.lastStudent = { box: { x: t.x, y: t.y, width: t.width, height: t.height }, at: now };
     }
     for (const d of detections) {
       if (usedDet.has(d)) continue;
-      this.tracks.push({ ...d, id: this.nextId++, vx: 0, vy: 0, lastSeen: now, isStudent: false, checkedAt: 0 });
+      if ((d.score ?? 1) < SPAWN_MIN_SCORE || this.inHand(d, hands)) continue;
+      this.spawn(d, now, 0);
     }
     this.tracks = this.tracks.filter((t) => now - t.lastSeen < TRACK_TTL_MS);
     return this.tracks;
@@ -108,7 +148,7 @@ export class FaceTracker {
    * Rezultatele face-api (mai lente, cu identitate). Dacă o față nu are track (de ex. e departe
    * și BlazeFace n-a văzut-o), o adăugăm, ca să fie estompată.
    */
-  applyIdentity(results: (Box & { distance: number | null })[], threshold: number, now: number) {
+  applyIdentity(results: (Box & { distance: number | null })[], threshold: number, now: number, hands: Box[] = []) {
     let bestTrack: Track | null = null;
     let bestDistance = Infinity;
     for (const r of results) {
@@ -122,8 +162,10 @@ export class FaceTracker {
         }
       }
       if (!match) {
-        match = { ...r, id: this.nextId++, vx: 0, vy: 0, lastSeen: now, isStudent: false, checkedAt: now };
-        this.tracks.push(match);
+        // Elevul confirmat de face-api nu are nevoie de verificarea mâinii; un necunoscut, da.
+        const known = r.distance !== null && r.distance < threshold;
+        if (!known && this.inHand(r, hands)) continue;
+        match = this.spawn(r, now, now);
       }
       match.checkedAt = now;
       // Histerezis: elevul rămâne elev până la o distanță clar mai mare.
@@ -135,10 +177,14 @@ export class FaceTracker {
     }
     // Un singur elev: cea mai apropiată potrivire.
     for (const t of this.tracks) if (t !== bestTrack && t.checkedAt === now) t.isStudent = false;
-    if (bestTrack) bestTrack.isStudent = true;
+    if (bestTrack) {
+      bestTrack.isStudent = true;
+      this.lastStudent = { box: { x: bestTrack.x, y: bestTrack.y, width: bestTrack.width, height: bestTrack.height }, at: now };
+    }
   }
 
   reset() {
     this.tracks = [];
+    this.lastStudent = null;
   }
 }
