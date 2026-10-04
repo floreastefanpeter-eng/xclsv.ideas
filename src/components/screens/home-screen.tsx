@@ -14,7 +14,7 @@ import { ASL_CREDIT } from "@/lib/asl/glossary";
 import { supabaseConfigured } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
 
-/** Intrarea în Punte: contul întâi. Ecranele partajate (masa, clasa) intră doar cu codul. */
+/** Intrarea în SIGNals: contul întâi. Ecranele partajate (masa, clasa) intră doar cu codul. */
 export default function HomeScreen({ next }: { next?: string }) {
   const { state } = useAuth();
   const router = useRouter();
@@ -35,7 +35,7 @@ export default function HomeScreen({ next }: { next?: string }) {
               <BookOpen aria-hidden />
               <span className="hidden sm:inline">Ghidul semnelor</span>
             </Link>
-            <Link href="/despre" className={nav} aria-label="Despre Punte">
+            <Link href="/despre" className={nav} aria-label="Despre SIGNals">
               <Info aria-hidden />
               <span className="hidden sm:inline">Despre</span>
             </Link>
@@ -51,7 +51,7 @@ export default function HomeScreen({ next }: { next?: string }) {
               <span className="text-elev">Clasa înțelege.</span>
             </h1>
             <p className="mt-4 max-w-2xl text-lg leading-relaxed text-ink/80 sm:text-xl">
-              Punte e linia dintre elevul surd și profesor: semnele devin voce, vocea devine subtitrare pe masa elevului,
+              SIGNals e linia dintre elevul surd și profesor: semnele devin voce, vocea devine subtitrare pe masa elevului,
               tradusă în limba lui, iar AI-ul notează termenii lecției în locul profesorului.
             </p>
           </div>
@@ -85,7 +85,7 @@ export default function HomeScreen({ next }: { next?: string }) {
         </div>
       </main>
       <footer className="border-t border-border bg-white/60 px-4 py-6 text-center text-sm text-muted-foreground">
-        Punte nu înregistrează video sau audio; se salvează doar textul conversației. Model de semne:{" "}
+        SIGNals nu înregistrează video sau audio; se salvează doar textul conversației. Model de semne:{" "}
         <a href={ASL_CREDIT.modelUrl} className="font-bold text-ink underline" target="_blank" rel="noreferrer">
           ASL Realtime Transformer
         </a>{" "}

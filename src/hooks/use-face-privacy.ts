@@ -74,8 +74,16 @@ export function useFacePrivacy(
     let identityFailed = false;
     let fastFailed = false;
     let fast: Awaited<ReturnType<typeof loadFastFaceDetector>> | null = null;
+    // Cadrul estompat, la rezoluție mică (ieftin): se calculează o singură dată pe cadru.
+    const soft = document.createElement("canvas");
+    const sctx = soft.getContext("2d");
     const tiny = document.createElement("canvas");
     const tctx = tiny.getContext("2d");
+    // Stratul cu ovalele fețelor: măștile cu margini moi, apoi imaginea estompată doar în ele.
+    const layer = document.createElement("canvas");
+    const lctx = layer.getContext("2d");
+    /** Ovalul afișat pentru fiecare față, netezit între cadre (fără „pulsații”). */
+    const shown = new Map<number, { cx: number; cy: number; rx: number; ry: number }>();
     queueMicrotask(() => setStatus("loading"));
 
     const report = (tracks: Track[]) => {
@@ -115,32 +123,56 @@ export function useFacePrivacy(
         fastFailed = true;
       });
 
-    const blurRegion = (
-      ctx: CanvasRenderingContext2D,
-      video: HTMLVideoElement,
-      x: number,
-      y: number,
-      bw: number,
-      bh: number,
-      shape: "ellipse" | "rect",
-    ) => {
-      if (!tctx || bw < 2 || bh < 2) return;
-      // Micșorăm la ~12 px și mărim cu netezire: o pată fără detalii, imposibil de recunoscut.
-      tiny.width = 12;
-      tiny.height = Math.max(2, Math.round((12 * bh) / bw));
-      tctx.imageSmoothingEnabled = true;
-      tctx.drawImage(video, x, y, bw, bh, 0, 0, tiny.width, tiny.height);
-      ctx.save();
-      if (shape === "ellipse") {
-        ctx.beginPath();
-        ctx.ellipse(x + bw / 2, y + bh / 2, bw / 2, bh / 2, 0, 0, Math.PI * 2);
-        ctx.clip();
+    /** Tot cadrul, estompat puternic: la ~1/8 din rezoluție + blur, apoi mărit cu netezire. */
+    const blurFrame = (video: HTMLVideoElement, w: number, h: number) => {
+      if (!sctx) return false;
+      const sw = Math.max(16, Math.round(w / 8));
+      const sh = Math.max(12, Math.round(h / 8));
+      if (soft.width !== sw) soft.width = sw;
+      if (soft.height !== sh) soft.height = sh;
+      sctx.imageSmoothingEnabled = true;
+      sctx.imageSmoothingQuality = "high";
+      if (canvasFilter) {
+        sctx.filter = "blur(2.5px)";
+        // Desenăm puțin mai mare, ca marginile blur-ului să nu se întunece.
+        sctx.drawImage(video, -4, -4, sw + 8, sh + 8);
+        sctx.filter = "none";
+      } else if (tctx) {
+        // Safari vechi: două micșorări succesive dau un blur moale, fără canvas.filter.
+        tiny.width = Math.max(4, Math.round(sw / 3));
+        tiny.height = Math.max(3, Math.round(sh / 3));
+        tctx.imageSmoothingEnabled = true;
+        tctx.drawImage(video, 0, 0, tiny.width, tiny.height);
+        sctx.drawImage(tiny, 0, 0, sw, sh);
       }
-      ctx.imageSmoothingEnabled = true;
-      if (canvasFilter) ctx.filter = `blur(${Math.max(4, Math.round(bw / 18))}px)`;
-      // Desenăm puțin peste margini, ca blur-ul să nu lase un contur clar.
-      ctx.drawImage(tiny, 0, 0, tiny.width, tiny.height, x - 8, y - 8, bw + 16, bh + 16);
-      ctx.restore();
+      return true;
+    };
+
+    /** Ovalele fețelor: miez opac (fața e acoperită complet), margine moale spre exterior. */
+    const drawFaces = (ctx: CanvasRenderingContext2D, w: number, h: number, faces: { cx: number; cy: number; rx: number; ry: number }[]) => {
+      if (!lctx || !faces.length) return;
+      if (layer.width !== w) layer.width = w;
+      if (layer.height !== h) layer.height = h;
+      lctx.globalCompositeOperation = "source-over";
+      lctx.clearRect(0, 0, w, h);
+      for (const f of faces) {
+        lctx.save();
+        lctx.translate(f.cx, f.cy);
+        lctx.scale(f.rx, f.ry);
+        const g = lctx.createRadialGradient(0, 0, 0, 0, 0, 1);
+        g.addColorStop(0, "rgba(0,0,0,1)");
+        g.addColorStop(0.8, "rgba(0,0,0,1)");
+        g.addColorStop(1, "rgba(0,0,0,0)");
+        lctx.fillStyle = g;
+        lctx.beginPath();
+        lctx.arc(0, 0, 1, 0, Math.PI * 2);
+        lctx.fill();
+        lctx.restore();
+      }
+      lctx.globalCompositeOperation = "source-in";
+      lctx.imageSmoothingEnabled = true;
+      lctx.drawImage(soft, 0, 0, w, h);
+      ctx.drawImage(layer, 0, 0);
     };
 
     const draw = () => {
@@ -176,23 +208,43 @@ export function useFacePrivacy(
       ctx.clearRect(0, 0, w, h);
       // Detecția s-a blocat (tab inactiv, GPU pierdut): estompăm tot, nu ghicim.
       const stalled = fastReady && !fast ? false : fastReady && now - lastFastAt > STALL_MS;
+      if (!blurFrame(video, w, h)) return;
       if (!ready || stalled) {
-        blurRegion(ctx, video, 0, 0, w, h, "rect");
+        ctx.imageSmoothingEnabled = true;
+        ctx.drawImage(soft, 0, 0, w, h);
         return;
       }
+      const faces: { cx: number; cy: number; rx: number; ry: number }[] = [];
+      const alive = new Set<number>();
       for (const t of tracker.tracks) {
         if (t.isStudent) continue;
+        alive.add(t.id);
         const p = tracker.predict(t, now);
-        // Cu cât fața lipsește mai mult, cu atât zona crește (poate s-a mișcat).
-        const grow = 1 + Math.min(0.6, (now - t.lastSeen) / 1000);
-        const bw = p.width * (1 + 2 * PAD_X) * grow;
-        const bh = p.height * (1 + PAD_TOP + PAD_BOTTOM) * grow;
-        const cx = p.x + p.width / 2;
-        const x = Math.max(0, cx - bw / 2);
-        const y = Math.max(0, p.y - p.height * PAD_TOP * grow);
-        blurRegion(ctx, video, x, y, Math.min(w - x, bw), Math.min(h - y, bh), "ellipse");
+        // Cu cât fața lipsește mai mult, cu atât ovalul crește puțin (poate s-a mișcat).
+        const grow = 1 + Math.min(0.35, (now - t.lastSeen) / 1500);
+        const target = {
+          cx: p.x + p.width / 2,
+          // Ovalul urcă puțin peste frunte și păr.
+          cy: p.y + p.height / 2 - (p.height * (PAD_TOP - PAD_BOTTOM)) / 2,
+          rx: p.width * (0.5 + PAD_X) * grow,
+          ry: p.height * (0.5 + (PAD_TOP + PAD_BOTTOM) / 2) * grow,
+        };
+        const prev = shown.get(t.id);
+        // Poziția urmează repede; mărimea se schimbă lin. Ovalul nu se micșorează brusc.
+        const next = prev
+          ? {
+              cx: prev.cx + (target.cx - prev.cx) * 0.6,
+              cy: prev.cy + (target.cy - prev.cy) * 0.6,
+              rx: Math.max(target.rx, prev.rx + (target.rx - prev.rx) * 0.2),
+              ry: Math.max(target.ry, prev.ry + (target.ry - prev.ry) * 0.2),
+            }
+          : target;
+        shown.set(t.id, next);
+        faces.push(next);
       }
-      report(tracker.tracks);
+      for (const id of shown.keys()) if (!alive.has(id)) shown.delete(id);
+      drawFaces(ctx, w, h, faces);
+            report(tracker.tracks);
     };
     draw();
 

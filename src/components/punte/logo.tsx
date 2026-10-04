@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
-/** Marca Punte: linia roșie (profesorul) și linia albastră (elevul) se întâlnesc în stația de corespondență. */
+/** Marca SIGNals: linia roșie (profesorul) și linia albastră (elevul) se întâlnesc în stația de corespondență. */
 export function PunteMark({ className, outlined }: { className?: string; outlined?: boolean }) {
   return (
     <svg viewBox="0 0 40 40" aria-hidden="true" className={cn("size-9", className)}>
@@ -18,10 +18,13 @@ export function Logo({ className, dark, href = "/" }: { className?: string; dark
     <Link
       href={href}
       className={cn("inline-flex items-center gap-2.5 rounded-md", dark ? "text-white" : "text-ink", className)}
-      aria-label="Punte — pagina principală"
+      aria-label="SIGNals — pagina principală"
     >
       <PunteMark outlined={dark} />
-      <span className="plate text-[1.65rem] leading-none">Punte</span>
+      {/* Cuvântul-marcă își păstrează scrierea: SIGN (semn) + als, nu majuscule. */}
+      <span className="plate text-[1.65rem] leading-none normal-case">
+        SIGN<span className={dark ? "text-elev-line" : "text-elev"}>als</span>
+      </span>
     </Link>
   );
 }

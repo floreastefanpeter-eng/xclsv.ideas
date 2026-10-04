@@ -7,7 +7,7 @@ import { SignGuide } from "@/components/punte/sign-guide";
 import { ASL_CREDIT } from "@/lib/asl/glossary";
 import { cn } from "@/lib/utils";
 
-export const metadata: Metadata = { title: "Ghidul semnelor · Punte" };
+export const metadata: Metadata = { title: "Ghidul semnelor · SIGNals" };
 
 export default function SignsPage() {
   return (

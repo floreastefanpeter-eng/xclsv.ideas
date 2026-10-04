@@ -105,7 +105,7 @@ export function CreateLessonForm() {
       <p className="flex items-start gap-2 rounded-md bg-elev-soft px-3 py-2.5 text-elev-dark">
         <Sparkles className="mt-0.5 size-5 shrink-0" aria-hidden />
         <span>
-          <strong>Termenii-cheie se notează singuri.</strong> Punte îi extrage din ce spui în timpul lecției și îi explică
+          <strong>Termenii-cheie se notează singuri.</strong> SIGNals îi extrage din ce spui în timpul lecției și îi explică
           simplu pe ecranul elevului.
         </span>
       </p>

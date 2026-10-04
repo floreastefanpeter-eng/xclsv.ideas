@@ -17,8 +17,8 @@ const archivo = Archivo({
 });
 
 export const metadata: Metadata = {
-  title: "Punte — lecția accesibilă",
-  description: "Elevul semnează. Clasa înțelege. Puntea dintre elevul surd și profesor, în timp real.",
+  title: "SIGNals — lecția accesibilă",
+  description: "Elevul semnează. Clasa înțelege. Legătura dintre elevul surd și profesor, în timp real.",
 };
 
 export const viewport: Viewport = {

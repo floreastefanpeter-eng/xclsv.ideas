@@ -60,7 +60,7 @@ export function computeStats(messages: Message[]): LessonStats {
   };
 }
 
-/** Ipotezele testate de Punte în fiecare lecție. */
+/** Ipotezele testate de SIGNals în fiecare lecție. */
 export function evaluateHypotheses(s: LessonStats): Hypothesis[] {
   const attempts = s.signsCamera + s.unknown;
   const recognized = attempts ? s.signsCamera / attempts : null;

@@ -121,7 +121,7 @@ export default function RegisterScreen() {
       <div>
         <h1 className="font-display text-4xl font-extrabold">Cine semnează?</h1>
         <p className="mt-2 text-lg text-ink/80">
-          Punte recunoaște fața elevului ca să o lase vizibilă pe cameră și să le estompeze pe ale colegilor.
+          SIGNals recunoaște fața elevului ca să o lase vizibilă pe cameră și să le estompeze pe ale colegilor.
         </p>
       </div>
 
@@ -232,7 +232,7 @@ export default function RegisterScreen() {
             {registration.name} este înregistrat
           </h2>
           <p className="text-lg">
-            Pe camera lui Punte, fața ta rămâne vizibilă, iar fețele colegilor sunt estompate. Amprenta feței e salvată doar în acest
+            Pe camera SIGNals, fața ta rămâne vizibilă, iar fețele colegilor sunt estompate. Amprenta feței e salvată doar în acest
             browser din {new Date(registration.createdAt).toLocaleDateString("ro-RO")}.
           </p>
           <div className="flex flex-wrap gap-2">

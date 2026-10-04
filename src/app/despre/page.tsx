@@ -6,7 +6,7 @@ import { StationBand } from "@/components/punte/station-band";
 import { ASL_CREDIT } from "@/lib/asl/glossary";
 import { cn } from "@/lib/utils";
 
-export const metadata: Metadata = { title: "Despre Punte" };
+export const metadata: Metadata = { title: "Despre SIGNals" };
 
 const SOURCES = [
   {
@@ -36,7 +36,7 @@ export default function AboutPage() {
   return (
     <>
     <StationBand right={<Link href="/" className={cn(buttonVariants({ variant: "ghost" }), "text-white hover:bg-white/10 hover:text-white")}>
-          Încearcă Punte
+          Încearcă SIGNals
           <ArrowRight aria-hidden />
         </Link>} />
     <main className="mx-auto flex w-full max-w-4xl flex-1 flex-col gap-5 px-4 pb-16 pt-6">
@@ -75,7 +75,7 @@ export default function AboutPage() {
 
       <Section id="tema" title="Tema „middleman”">
         <p>
-          Punte nu înlocuiește interpretul și nu „vorbește” în locul elevului. Este un mediator: transmite exact ce a semnat
+          SIGNals nu înlocuiește interpretul și nu „vorbește” în locul elevului. Este un mediator: transmite exact ce a semnat
           elevul și exact ce a spus profesorul, iar când nu este sigur spune „semn necunoscut” în loc să ghicească.
         </p>
       </Section>
@@ -103,7 +103,7 @@ export default function AboutPage() {
           are în medie sub două clipuri pe semn și o acuratețe maximă raportată de 34,1%, prea puțin pentru o lecție live.
         </p>
         <p>
-          De aceea Punte folosește acum <strong>{ASL_CREDIT.model}</strong> de {ASL_CREDIT.author} ({ASL_CREDIT.modelLicense}),
+          De aceea SIGNals folosește acum <strong>{ASL_CREDIT.model}</strong> de {ASL_CREDIT.author} ({ASL_CREDIT.modelLicense}),
           antrenat pe setul Google Isolated Sign Language Recognition (250 de semne ASL, 21 de semnatari surzi). Autorul
           raportează 74,7% acuratețe top-1 pe semnatari nevăzuți la antrenare. Semnele sunt <strong>ASL</strong>, nu LSR:
           aplicația arată glosa ASL și traducerea în română, iar ghidul de semne trimite la DLMG pentru semnul românesc.

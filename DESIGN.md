@@ -1,5 +1,5 @@
 ---
-name: Punte
+name: SIGNals
 description: "Elevul semnează. Clasa înțelege." A classroom lesson drawn as a metro line between a hearing teacher and a deaf student.
 colors:
   prof-signal-red: "#d4141c"
@@ -186,13 +186,13 @@ components:
     padding: "16px"
 ---
 
-# Design System: Punte
+# Design System: SIGNals
 
 ## Overview
 
 **Creative North Star: "The Transfer Station"**
 
-Punte is metro wayfinding applied to a lesson. The teacher runs on the red line, the student on the blue line, and the bridge between them is the transfer station. Every device that joins a lesson is a station on a line map. Every utterance is a stop on a vertical route, with the time in a fixed column, a 4px rail, and a round station dot. Section headings are station plates: solid colour fields carrying condensed, uppercase Archivo, like the signs on a platform wall. The navy station band across the top of every screen ends in a red-then-blue stripe, so you always know which network you're on.
+SIGNals is metro wayfinding applied to a lesson. The teacher runs on the red line, the student on the blue line, and the bridge between them is the transfer station. Every device that joins a lesson is a station on a line map. Every utterance is a stop on a vertical route, with the time in a fixed column, a 4px rail, and a round station dot. Section headings are station plates: solid colour fields carrying condensed, uppercase Archivo, like the signs on a platform wall. The navy station band across the top of every screen ends in a red-then-blue stripe, so you always know which network you're on.
 
 The density is operational. Screens are read in noisy classrooms, on phones on a desk, and from the back row on a projector, so type runs large (body 1.125rem, captions in bold, projector captions up to 4.5rem). Contrast is high and every touch target is at least 44px. Colour carries identity (red is the teacher, blue is the student, amber means attention) and never carries meaning alone: every semafor colour has a text label beside it. Shared screens (projector `/clasa`, student desk `/masa`) switch to a night palette of navy ink with brightened line colours.
 

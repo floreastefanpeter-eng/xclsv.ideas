@@ -101,7 +101,7 @@ const ROLES: {
   },
 ];
 
-/** Intrarea în Punte: autentificare sau cont nou (profesor / elev), prin Supabase Auth. */
+/** Intrarea în SIGNals: autentificare sau cont nou (profesor / elev), prin Supabase Auth. */
 export function AuthForm({ next }: { next?: string }) {
   const router = useRouter();
   const [tab, setTab] = useState<"login" | "register">("login");
@@ -158,7 +158,7 @@ export function AuthForm({ next }: { next?: string }) {
       } else {
         if (demo)
           toast.success("Cont demo creat pe acest dispozitiv.", {
-            description: "Serverul de email a atins limita, dar poți folosi Punte complet.",
+            description: "Serverul de email a atins limita, dar poți folosi SIGNals complet.",
           });
         else toast.success(`Bun venit, ${name.trim().split(" ")[0]}!`);
         go();

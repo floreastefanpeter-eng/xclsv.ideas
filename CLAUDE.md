@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-Punte is a hackathon app (theme: "middleman") that mediates a classroom lesson between a deaf/hard-of-hearing student and a hearing teacher. **All UI text is Romanian** — keep new strings in Romanian, with Romanian diacritics (ș, ț, ă, â, î). README.md (also Romanian) is the user-facing documentation.
+SIGNals is a hackathon app (theme: "middleman") that mediates a classroom lesson between a deaf/hard-of-hearing student and a hearing teacher. **All UI text is Romanian** — keep new strings in Romanian, with Romanian diacritics (ș, ț, ă, â, î). README.md (also Romanian) is the user-facing documentation.
 
 ## Commands
 

@@ -1,8 +1,8 @@
-# Punte — platforma lecției accesibile
+# SIGNals — platforma lecției accesibile
 
 **Elevul semnează. Clasa înțelege.**
 
-Punte este un „kit al clasei” pentru elevii surzi sau hipoacuzici. Mediază lecția în ambele sensuri:
+SIGNals este un „kit al clasei” pentru elevii surzi sau hipoacuzici. Mediază lecția în ambele sensuri:
 
 | Piesă | În demo | Ce face |
 | --- | --- | --- |
@@ -11,7 +11,7 @@ Punte este un „kit al clasei” pentru elevii surzi sau hipoacuzici. Mediază 
 | **Masa elevului** | tableta sau telefonul de pe bancă (`/masa/[code]`) | Tot ce spune profesorul, foarte mare și în timp real, tradus în limba aleasă (engleză, franceză, maghiară, ucraineană…), plus termenii lecției explicați simplu. Fără cont, doar cu codul. |
 | **Ecranul clasei** | proiectorul (`/clasa/[code]`) | Conversația în ambele sensuri, semaforul elevului și, la final, memoria lecției generată de AI. |
 
-Punte începe cu **contul**: profesorul și elevul se înregistrează (email + parolă, Supabase Auth). Profesorul scrie doar materia și titlul lecției — **termenii-cheie se extrag automat** din ce spune în timpul lecției.
+SIGNals începe cu **contul**: profesorul și elevul se înregistrează (email + parolă, Supabase Auth). Profesorul scrie doar materia și titlul lecției — **termenii-cheie se extrag automat** din ce spune în timpul lecției.
 
 ## Stack
 
@@ -82,7 +82,7 @@ Pe iOS, browserul nu poate vibra: alertele rămân doar vizuale. Recunoașterea 
 
 ## Conturi, termeni-cheie extrași automat și traducere
 
-- **Confirmarea prin cod**: după „Cont nou”, Punte cere codul de 6 cifre din email (cu „Retrimite codul”). În Supabase → *Authentication → Email Templates → Confirm signup*, adaugă în șablon `{{ .Token }}` (codul); linkul `{{ .ConfirmationURL }}` poate rămâne.
+- **Confirmarea prin cod**: după „Cont nou”, SIGNals cere codul de 6 cifre din email (cu „Retrimite codul”). În Supabase → *Authentication → Email Templates → Confirm signup*, adaugă în șablon `{{ .Token }}` (codul); linkul `{{ .ConfirmationURL }}` poate rămâne.
 - **Cont demo, fără limite**: serverul de email inclus în Supabase trimite doar câteva emailuri pe oră. Dacă emailul nu poate pleca, contul se creează oricum, ca **cont demo** pe acel dispozitiv (sesiune anonimă + profil) și funcționează complet. Pentru o clasă reală: *Authentication → SMTP Settings* cu un server propriu (de ex. Resend) și limite mai mari la *Rate Limits*, sau oprește „Confirm email” pentru demo.
 - **Conturi** (`/`): *Intră în cont* sau *Cont nou* (profesor sau elev). Un trigger Supabase creează profilul (`profiles`: rol, nume, școală, limbă). Ecranele profesorului și elevului cer cont; masa elevului și proiectorul intră doar cu codul.
 - **Panoul** (`/panou`): profesorul pornește o lecție (materia + titlul; termenii sunt opționali) și își vede lecțiile; elevul intră cu codul, își alege limba subtitrărilor și își vede istoricul. Numele elevului ajunge singur pe lecție când intră.
@@ -106,7 +106,7 @@ Pe ecranul elevului se alege modul de recunoaștere:
 
 **Fluxul:** cameră → MediaPipe Holistic (543 de puncte: față, corp, mâini) → segmentare (un semn = mâna în cadru, apoi coborâtă) → fereastră de 64 de cadre × 66 de puncte (buze, mâna dominantă, braț) → transformer temporal → top 3 semne cu probabilități → confirmare de 1,5 s → mesaj.
 
-**Semn necunoscut:** dacă cel mai probabil semn are sub **50%**, Punte nu ghicește. Elevul vede „Semn necunoscut” cu cele mai apropiate 3 variante, iar în conversație apare „Andrei: semn necunoscut” (fără voce). Profesorul vede „Andrei a făcut un semn necunoscut”, iar semnul intră în statistici. În modul „Dicționarul meu”, un semn ținut nemișcat care nu seamănă cu niciun cuvânt (scor de potrivire sub 0,45) e raportat la fel.
+**Semn necunoscut:** dacă cel mai probabil semn are sub **50%**, SIGNals nu ghicește. Elevul vede „Semn necunoscut” cu cele mai apropiate 3 variante, iar în conversație apare „Andrei: semn necunoscut” (fără voce). Profesorul vede „Andrei a făcut un semn necunoscut”, iar semnul intră în statistici. În modul „Dicționarul meu”, un semn ținut nemișcat care nu seamănă cu niciun cuvânt (scor de potrivire sub 0,45) e raportat la fel.
 
 **Traducerea:** fiecare semn ASL are cuvântul românesc (`src/lib/asl/glossary.ts`). Câteva au sens în clasă: *why / who / where* → „De ce? / Cine? / Unde?” (alertă), *wait* → „Așteptați, vă rog!” (alertă), *potty* → „Pot să merg la toaletă?” (alertă), *stuck* → „M-am blocat.” (roșu), *sick* → „Mă simt rău.” (roșu), *yes / finish / thankyou* → verde.
 
@@ -138,7 +138,7 @@ Pe camera elevului (ecranul elevului și pagina de antrenare) se detectează fe�
 - până pornește detecția, sau dacă detecția se blochează peste 1,2 s, se estompează **tot cadrul**;
 - până pornește protecția, imaginea camerei e ascunsă complet, iar semnele sunt recunoscute în continuare.
 
-**De ce așa:** recunoașterea feței înseamnă date biometrice (art. 9 GDPR). Le procesăm doar cu consimțământ explicit, într-un singur scop, local, cu drept de ștergere. Camera Punte oricum nu înregistrează și nu transmite video.
+**De ce așa:** recunoașterea feței înseamnă date biometrice (art. 9 GDPR). Le procesăm doar cu consimțământ explicit, într-un singur scop, local, cu drept de ștergere. Camera SIGNals oricum nu înregistrează și nu transmite video.
 
 ## Dicționarul de semne (`/elev/antrenare`)
 

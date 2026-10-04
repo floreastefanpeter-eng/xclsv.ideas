@@ -258,7 +258,7 @@ export default function TrainingScreen() {
       }
       throw new Error();
     } catch {
-      setMessage({ ok: false, text: "Fișierul nu este un export Punte sau LSR Translator valid." });
+      setMessage({ ok: false, text: "Fișierul nu este un export SIGNals sau LSR Translator valid." });
     }
   };
 

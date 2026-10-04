@@ -14,7 +14,7 @@ web
 
 ## Product Purpose
 
-Punte este intermediarul („middleman”) lecției: semnele elevului devin voce pentru profesor, vocea profesorului devine subtitrare live (și tradusă) pentru elev, iar AI-ul păstrează memoria lecției. Succes = elevul înțelege lecția în timp real și poate interveni fără să întrerupă clasa; profesorul nu are muncă în plus.
+SIGNals este intermediarul („middleman”) lecției: semnele elevului devin voce pentru profesor, vocea profesorului devine subtitrare live (și tradusă) pentru elev, iar AI-ul păstrează memoria lecției. Succes = elevul înțelege lecția în timp real și poate interveni fără să întrerupă clasa; profesorul nu are muncă în plus.
 
 ## Positioning
 
@@ -37,7 +37,7 @@ Mediere bidirecțională în clasă, nu doar o aplicație de subtitrare: recunoa
 
 ## Brand Commitments
 
-- Numele „Punte”, sloganul „Elevul semnează. Clasa înțelege.”
+- Numele „SIGNals”, sloganul „Elevul semnează. Clasa înțelege.”
 - Temă de culoare: **roșu și albastru** (cerință a utilizatorului).
 - Fiecare culoare de semafor este însoțită mereu de o etichetă text. Iconițe `lucide-react`, fără emoji.
 - Creditul modelului ASL Realtime Transformer (Ceyda Akın, CC BY 4.0) rămâne vizibil.
