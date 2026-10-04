@@ -61,6 +61,8 @@ export default function TrainingScreen() {
   const [lastRecognized, setLastRecognized] = useState<string | null>(null);
   const [message, setMessage] = useState<{ ok: boolean; text: string } | null>(null);
   const [newWord, setNewWord] = useState("");
+  /** Fraza rostită la profesor pentru cuvântul nou (opțională: altfel se rostește cuvântul). */
+  const [newPhrase, setNewPhrase] = useState("");
 
   const phaseRef = useRef<Phase>(phase);
   const collected = useRef<number[][]>([]);
@@ -466,25 +468,61 @@ export default function TrainingScreen() {
         </div>
 
         <form
-          className="flex flex-col gap-2 rounded-xl bg-white p-4 border border-border sm:flex-row sm:items-end"
+          className="flex flex-col gap-3 rounded-xl border border-border bg-white p-4"
           onSubmit={(e) => {
             e.preventDefault();
-            const id = addWord(newWord);
+            const id = addWord(newWord, newPhrase);
             if (id) {
-              setMessage({ ok: true, text: `„${newWord.trim().toUpperCase()}” a fost adăugat în dicționar. Antrenează-l mai jos.` });
+              setMessage({
+                ok: true,
+                text: newPhrase.trim()
+                  ? `„${newWord.trim().toUpperCase()}” a fost adăugat: semnul lui va rosti „${newPhrase.trim()}”. Antrenează-l mai jos.`
+                  : `„${newWord.trim().toUpperCase()}” a fost adăugat în dicționar. Antrenează-l mai jos.`,
+              });
               setNewWord("");
+              setNewPhrase("");
             }
           }}
         >
-          <div className="flex-1 space-y-1.5">
-            <label htmlFor="new-word" className="block font-bold">
-              Adaugă un cuvânt în dicționar
-            </label>
-            <Input id="new-word" value={newWord} onChange={(e) => setNewWord(e.target.value)} placeholder="de exemplu: PAUZĂ" />
+          <div className="flex flex-wrap items-baseline justify-between gap-2">
+            <h2 className="font-display text-xl font-extrabold">Adaugă un semn al tău</h2>
+            <button
+              type="button"
+              className="min-h-11 text-sm font-bold text-elev underline"
+              onClick={() => {
+                setNewWord("PREZENTARE");
+                setNewPhrase("Bună! Sunt elev la Colegiul Național de Informatică Tudor Vianu.");
+              }}
+            >
+              Exemplu: prezentarea mea
+            </button>
           </div>
-          <Button type="submit" disabled={!newWord.trim()}>
+          <div className="grid gap-3 sm:grid-cols-[minmax(0,0.7fr)_minmax(0,1.3fr)]">
+            <div className="space-y-1.5">
+              <label htmlFor="new-word" className="block font-bold">
+                Cuvântul
+              </label>
+              <Input id="new-word" value={newWord} onChange={(e) => setNewWord(e.target.value)} placeholder="de exemplu: PAUZĂ" />
+            </div>
+            <div className="space-y-1.5">
+              <label htmlFor="new-phrase" className="block font-bold">
+                Ce aude profesorul <span className="font-normal text-muted-foreground">(opțional, o frază întreagă)</span>
+              </label>
+              <Input
+                id="new-phrase"
+                value={newPhrase}
+                onChange={(e) => setNewPhrase(e.target.value)}
+                maxLength={300}
+                placeholder="de exemplu: Pot să ies puțin, vă rog?"
+              />
+            </div>
+          </div>
+          <p className="text-sm text-muted-foreground">
+            Un semn poate rosti o frază întreagă. Alege un semn ușor de deosebit de celelalte, apoi antrenează-l mai jos.
+          </p>
+          <Button type="submit" disabled={!newWord.trim()} className="self-start">
             <Plus aria-hidden />
-            Adaugă
+            Adaugă în dicționar
           </Button>
         </form>
 

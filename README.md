@@ -201,15 +201,21 @@ Sfaturi: aceeași persoană și aceeași lumină ca la prezentare; semne cu form
 
 Totul e real: semnele elevului și vocea profesorului. Nu există un scenariu automat.
 
-1. **Profesorul**: pe `/`, alege șablonul *Biologie · Fotosinteza* și apasă „Creează lecția”.
-2. **Elevul** scanează QR-ul și alege „Sunt elevul”. **Proiectorul** deschide același cod și alege „Ecranul clasei”. Apare „Profesor conectat / Elev conectat / Ecranul clasei conectat”.
-3. Profesorul pornește microfonul: *„Andrei, te rog să fii atent la tablă. Astăzi vorbim despre fotosinteză.”* Elevul vede subtitrarea live și primește alerta de nume.
-4. Elevul semnează în ASL (de exemplu **why** → „De ce?”) sau, în modul „Dicționarul meu”, **NU ÎNȚELEG**. După confirmarea de 1,5 s, semaforul devine roșu, telefonul profesorului spune „Nu am înțeles.” și insigna pulsează. Profesorul apasă „Am văzut” și repetă mai simplu.
-5. Elevul semnează **TERMEN** („Ce este fotosinteza?”), apoi **DA** sau **AM TERMINAT** după explicație.
-6. Profesorul anunță: *„Tema pentru mâine: exercițiile 1, 2 și 3 de la pagina 42.”* Elevul primește alerta de temă.
-7. Profesorul apasă **„Încheie lecția”**: memoria lecției apare pe toate cele trei ecrane, cu butonul „Copiază”.
+**Cu o zi înainte**
+- Creează conturile (un profesor, un elev) pe https://signals.akiokun.com și intră o dată cu fiecare, pe dispozitivele de la demo.
+- Pe telefonul elevului: `/elev/antrenare` → **Exemplu: prezentarea mea** → *Adaugă în dicționar*. Cuvântul **PREZENTARE** rostește „Bună! Sunt elev la Colegiul Național de Informatică Tudor Vianu.” Antrenează-l cu un semn ușor de deosebit (de exemplu salutul ASL *hello*, de la frunte în afară), 2–3 înregistrări, în lumina din sală.
+- Telefonul profesorului: volumul sus; Chrome sau Edge (recunoașterea vocală).
 
-Plasa de siguranță: dacă un semn nu e recunoscut în sală, elevul atinge cuvântul din dicționar (sau tastele 1–9). Profesorul are „Replici rapide” și câmpul de text.
+**Pe scenă**
+1. **Profesorul** intră în cont → *Panoul meu* → șablonul *Biologie · Fotosinteza* → **Pornește lecția**. Pe ecran apare codul și QR-ul.
+2. **Elevul** intră cu codul. **Tableta de pe masă** (sau proiectorul) scanează QR-ul → *Masa elevului* / *Ecranul clasei*. Pe linia de sus se aprind stațiile: Profesor, Elev, Masa.
+3. Elevul alege **Dicționarul meu** și face semnul **PREZENTARE**. După confirmarea de 1,5 s, telefonul profesorului spune cu voce: *„Bună! Sunt elev la Colegiul Național de Informatică Tudor Vianu.”*
+4. Profesorul pornește microfonul: *„Bun venit! Astăzi vorbim despre fotosinteză. Clorofila este pigmentul verde din frunze.”* Pe masa elevului apare textul mare, tradus în limba aleasă; termenii-cheie apar singuri.
+5. Elevul semnează **NU ÎNȚELEG**: semaforul devine roșu, telefonul profesorului rostește „Nu am înțeles.” și insigna pulsează. Profesorul apasă **Am văzut**.
+6. Profesorul anunță: *„Tema pentru mâine: exercițiile 1, 2 și 3 de la pagina 42.”* Elevul primește alerta de temă.
+7. **Încheie lecția**: memoria lecției apare pe toate ecranele, tradusă pentru elev.
+
+**Plasa de siguranță**: dacă un semn nu e recunoscut în sală, elevul atinge cuvântul din dicționar (sau tastele 1–9) — fraza se rostește la fel. Profesorul are *Replici rapide* și câmpul de text.
 
 ## Scurtături de tastatură
 
