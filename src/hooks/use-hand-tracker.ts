@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { HandLandmarker, HolisticLandmarker } from "@mediapipe/tasks-vision";
 import type { HandFrame, Landmark } from "@/lib/knn";
 import { holisticFrame } from "@/lib/asl/preprocess";
+import { openCamera } from "@/lib/camera";
 import { HandSmoother } from "@/lib/one-euro";
 import { getVision, withDelegateFallback as withFallback } from "@/lib/vision";
 
@@ -150,10 +151,7 @@ export function useHandTracker(onFrame: (frame: VisionFrame) => void, color = "#
     }
     let stream: MediaStream;
     try {
-      stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: "user", width: { ideal: 640 }, height: { ideal: 480 } },
-        audio: false,
-      });
+      stream = await openCamera();
     } catch (e) {
       const name = (e as DOMException)?.name;
       setStatus(name === "NotAllowedError" || name === "SecurityError" ? "denied" : "error");
@@ -217,15 +215,17 @@ export function useHandTracker(onFrame: (frame: VisionFrame) => void, color = "#
       }
       const person = r.posePresent || r.hands.landmarks.length > 0;
       noPersonFrames = person ? 0 : noPersonFrames + 1;
+      // Pragurile au fost calibrate pe 4:3; pe 16:9 umerii par mai înguști în coordonate normalizate.
+      const shoulders = r.shoulders === null ? null : r.shoulders * (v.videoWidth / v.videoHeight / (4 / 3));
       const edge = r.hands.landmarks.some((h) => h.some((p) => p.x < 0.02 || p.x > 0.98 || p.y < 0.02 || p.y > 0.98));
       const next =
         brightness < 55
           ? "Lumină slabă — aprinde o lumină în fața ta"
           : noPersonFrames > 45
             ? "Nu te văd — așază-te în fața camerei"
-            : r.shoulders !== null && r.shoulders > 0.62
+            : shoulders !== null && shoulders > 0.62
               ? "Prea aproape — dă-te puțin înapoi"
-              : r.shoulders !== null && r.shoulders < 0.16
+              : shoulders !== null && shoulders < 0.16
                 ? "Prea departe — vino mai aproape"
                 : edge
                   ? "Mâna iese din cadru"

@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { StationBand } from "@/components/punte/station-band";
 import { useRegistration } from "@/hooks/use-face-privacy";
 import { deleteRegistration, detectFaces, loadFaceApi, saveRegistration } from "@/lib/face/face-id";
+import { openCamera, videoAspect } from "@/lib/camera";
 import { cn } from "@/lib/utils";
 
 const SAMPLES = 5;
@@ -56,6 +57,8 @@ export default function RegisterScreen() {
     setScanStatus("idle");
   }, [stopCamera, name, consentGuardian]);
 
+  const [aspect, setAspect] = useState(4 / 3);
+
   const startScan = useCallback(async () => {
     setError(null);
     setScanStatus("loading");
@@ -63,7 +66,7 @@ export default function RegisterScreen() {
     setCount(0);
     try {
       const [stream] = await Promise.all([
-        navigator.mediaDevices.getUserMedia({ video: { facingMode: "user", width: { ideal: 640 } }, audio: false }),
+        openCamera(),
         loadFaceApi(),
       ]);
       streamRef.current = stream;
@@ -187,8 +190,19 @@ export default function RegisterScreen() {
           <h2 id="scan-title" className="font-display text-2xl font-extrabold">
             Scanarea feței
           </h2>
-          <div className="relative aspect-[4/3] overflow-hidden rounded-lg bg-black">
-            <video ref={videoRef} playsInline muted className="mirror absolute inset-0 size-full object-cover" aria-hidden />
+          <div
+            className="relative mx-auto overflow-hidden rounded-lg bg-black"
+            style={{ aspectRatio: String(aspect), width: `min(100%, calc(70dvh * ${aspect}))` }}
+          >
+            <video
+              ref={videoRef}
+              playsInline
+              muted
+              onLoadedMetadata={(e) => setAspect(videoAspect(e.currentTarget) ?? 4 / 3)}
+              onResize={(e) => setAspect(videoAspect(e.currentTarget) ?? 4 / 3)}
+              className="mirror absolute inset-0 size-full object-cover"
+              aria-hidden
+            />
             {scanStatus === "idle" || scanStatus === "error" ? (
               <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 p-6 text-center text-white">
                 {error ? (

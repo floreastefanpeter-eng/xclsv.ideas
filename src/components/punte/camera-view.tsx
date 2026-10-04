@@ -1,9 +1,11 @@
 "use client";
 
+import { useState } from "react";
 import { Camera, CameraOff, Loader2, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { TrackerStatus } from "@/hooks/use-hand-tracker";
 import type { PrivacyStatus } from "@/hooks/use-face-privacy";
+import { videoAspect } from "@/lib/camera";
 import { cn } from "@/lib/utils";
 
 /** Camera cu scheletul mâinilor desenat peste video, eticheta semnului și încrederea. */
@@ -43,10 +45,28 @@ export function CameraView({
   className?: string;
 }) {
   const active = status === "ready" || status === "loading";
+  // Până știm forma imaginii: 4:3. Apoi exact forma camerei, ca nimic să nu fie tăiat.
+  const [aspect, setAspect] = useState(4 / 3);
+  const syncAspect = (e: React.SyntheticEvent<HTMLVideoElement>) => {
+    const a = videoAspect(e.currentTarget);
+    if (a) setAspect(a);
+  };
   return (
     <div className={cn("overflow-hidden rounded-xl bg-ink text-white", className)}>
-      <div className="relative aspect-[4/3] w-full bg-black">
-        <video ref={videoRef} playsInline muted className="mirror absolute inset-0 size-full object-cover" aria-hidden />
+      <div
+        className="relative mx-auto bg-black"
+        // Pe telefon, ținut vertical, imaginea e înaltă: limităm înălțimea și micșorăm lățimea proporțional.
+        style={{ aspectRatio: String(aspect), width: `min(100%, calc(70dvh * ${aspect}))` }}
+      >
+        <video
+          ref={videoRef}
+          playsInline
+          muted
+          onLoadedMetadata={syncAspect}
+          onResize={syncAspect}
+          className="mirror absolute inset-0 size-full object-cover"
+          aria-hidden
+        />
         {privacyCanvasRef ? (
           <canvas ref={privacyCanvasRef} className="mirror absolute inset-0 size-full object-cover" aria-hidden />
         ) : null}
