@@ -56,4 +56,4 @@ Nu există testimoniale, clienți sau cifre de utilizare reale. Singura cifră p
 
 ## Accessibility & Inclusion
 
-Utilizatori surzi/hipoacuzici: nicio informație transmisă doar prin sunet; alertele sunt vizuale + vibrație. WCAG AA pentru contrast, `prefers-reduced-motion` respectat, focus vizibil, fonturi foarte lizibile (Atkinson Hyperlegible).
+Utilizatori surzi/hipoacuzici: nicio informație transmisă doar prin sunet; alertele sunt vizuale + vibrație. WCAG AA pentru contrast, `prefers-reduced-motion` respectat, focus vizibil, fonturi foarte lizibile (Geist, cu diacritice și chirilice).

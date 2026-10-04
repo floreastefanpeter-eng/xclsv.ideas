@@ -225,7 +225,7 @@ function StudentDashboard({ profile, updateProfile }: { profile: Profile; update
         <aside className="dark-surface flex items-start gap-4 rounded-xl bg-ink p-4 text-white sm:p-6">
           <Tablet className="size-8 shrink-0 text-elev-line" aria-hidden />
           <p className="text-white/85">
-            <strong className="text-white">Ai o tabletă pe masă?</strong> Deschide pe ea punte, apasă „Conectează un ecran” și scrie
+            <strong className="text-white">Ai o tabletă pe masă?</strong> Deschide pe ea SIGNals, apasă „Conectează un ecran” și scrie
             codul lecției. Acolo vezi, mare, tot ce spune profesorul, tradus în limba ta.
           </p>
         </aside>

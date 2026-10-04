@@ -35,7 +35,7 @@ export function AccountMenu({ profile, dark = false }: { profile: Profile; dark?
     <DropdownMenu>
       <DropdownMenuTrigger
         className={cn(
-          "inline-flex h-11 items-center gap-2 rounded-full border border-transparent pl-1 pr-3 font-semibold outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ink",
+          "inline-flex h-11 items-center gap-2 rounded-lg border border-transparent pl-1 pr-3 font-semibold outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ink",
           dark ? "text-white hover:bg-white/10" : "text-ink hover:border-border hover:bg-white",
         )}
         aria-label={`Contul ${profile.display_name}`}

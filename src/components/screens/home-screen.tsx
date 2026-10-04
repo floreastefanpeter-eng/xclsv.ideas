@@ -140,7 +140,7 @@ export default function HomeScreen({ next }: { next?: string }) {
                   Profesorul
                 </span>
                 <span className="relative h-px flex-1 overflow-hidden bg-white/15">
-                  <span className="absolute inset-y-0 w-1/3 animate-[signal_2.4s_ease-in-out_infinite] bg-gradient-to-r from-transparent via-prof-line to-transparent" />
+                  <span className="absolute inset-y-0 w-1/4 animate-[signal_2.4s_ease-in-out_infinite] bg-prof-line" />
                 </span>
                 <span className="flex items-center gap-2">
                   <MonitorSmartphone className="size-4" />

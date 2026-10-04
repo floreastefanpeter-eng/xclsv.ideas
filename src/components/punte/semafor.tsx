@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 
 const ORDER: SemaforState[] = ["semneaza", "intrebare", "inteles", "neinteles"];
 
-/** Semaforul elevului: albastru, chihlimbar, verde, roșu — fiecare cu etichetă. */
+/** Semaforul elevului: culorile semaforului (singura excepție de la roșu/alb/negru) — fiecare cu etichetă. */
 export function Semafor({
   state,
   dark,

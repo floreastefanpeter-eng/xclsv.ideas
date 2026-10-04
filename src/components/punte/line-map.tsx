@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 export interface Station {
   key: string;
   label: string;
-  /** Linia stației: roșu = profesor, albastru = elev și ecranele lui, gri = ecranul clasei. */
+  /** Linia stației: roșu = profesor, negru = elev și ecranele lui, gri = ecranul clasei. */
   line: "prof" | "elev" | "ink";
   on: boolean;
   /** Ecranul pe care ești acum („Ești aici”). */

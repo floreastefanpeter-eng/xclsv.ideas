@@ -263,7 +263,7 @@ export function PipelineDemo() {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <div role="radiogroup" aria-label="Direcția" className="inline-flex rounded-full border border-border p-1">
+          <div role="radiogroup" aria-label="Direcția" className="inline-flex rounded-lg border border-border p-1">
             {(["prof", "elev"] as Direction[]).map((d) => (
               <button
                 key={d}
@@ -271,8 +271,8 @@ export function PipelineDemo() {
                 aria-checked={direction === d}
                 onClick={() => switchDirection(d)}
                 className={cn(
-                  "min-h-10 rounded-full px-4 text-sm font-semibold transition-colors",
-                  direction === d ? "bg-ink text-white" : "text-muted-foreground hover:text-ink",
+                  "min-h-10 rounded-md px-4 text-sm font-semibold transition-colors",
+                  direction === d ? "bg-prof text-white" : "text-muted-foreground hover:text-ink",
                 )}
               >
                 {d === "prof" ? "Profesor → elev" : "Elev → profesor"}
@@ -281,7 +281,7 @@ export function PipelineDemo() {
           </div>
           <button
             onClick={() => (selected !== null ? restart() : setPlaying((p) => !p))}
-            className="inline-flex size-11 items-center justify-center rounded-full border border-border transition-colors hover:border-ink"
+            className="inline-flex size-11 items-center justify-center rounded-lg border border-border transition-colors hover:border-ink"
             aria-label={selected !== null ? "Reia demonstrația" : playing ? "Pune pauză" : "Continuă"}
           >
             {selected !== null ? <RotateCcw className="size-4" /> : playing ? <Pause className="size-4" /> : <Play className="size-4" />}

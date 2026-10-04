@@ -206,7 +206,7 @@ function AdminPanel({ profile }: { profile: Profile }) {
                 onClick={() => setTab(t.id)}
                 className={cn(
                   "min-h-11 rounded px-4 font-bold transition-colors",
-                  tab === t.id ? "bg-ink text-white" : "text-muted-foreground hover:text-ink",
+                  tab === t.id ? "bg-prof text-white" : "text-muted-foreground hover:text-ink",
                 )}
               >
                 {t.label}

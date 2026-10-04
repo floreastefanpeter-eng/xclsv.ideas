@@ -3,7 +3,7 @@ import type { SemaforState } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 /**
- * Insigna: plăcuța liniei (elev = albastru, profesor = roșu) cu LED-ul semaforului.
+ * Insigna: plăcuța liniei (elev = negru, profesor = roșu) cu LED-ul semaforului.
  * Culoarea are mereu și o etichetă text.
  */
 export function Insigna({
@@ -30,7 +30,7 @@ export function Insigna({
     <section
       aria-label={title}
       className={cn(
-        "relative overflow-hidden rounded-xl p-4 text-white shadow-[0_14px_30px_-18px_rgba(13,22,38,0.6)] sm:p-5",
+        "relative overflow-hidden rounded-xl p-4 text-white shadow-[0_14px_30px_-18px_rgba(10,10,10,0.5)] sm:p-5",
         variant === "elev" ? "bg-elev" : "bg-prof",
         alert && "badge-alert ring-4 ring-amber",
         className,
