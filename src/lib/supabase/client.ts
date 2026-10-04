@@ -4,12 +4,17 @@ import { createClient, type SupabaseClient, type Session } from "@supabase/supab
 
 let client: SupabaseClient | null = null;
 
+/** Variabilele Supabase sunt incluse la build (NEXT_PUBLIC_*): lipsa lor se vede, nu blochează pagina. */
+export function supabaseConfigured(): boolean {
+  return !!process.env.NEXT_PUBLIC_SUPABASE_URL && !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+}
+
 export function getSupabase(): SupabaseClient {
   if (client) return client;
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
   if (!url || !key) {
-    throw new Error("Lipsesc NEXT_PUBLIC_SUPABASE_URL sau NEXT_PUBLIC_SUPABASE_ANON_KEY în .env.local.");
+    throw new Error("Lipsesc NEXT_PUBLIC_SUPABASE_URL sau NEXT_PUBLIC_SUPABASE_ANON_KEY în .env.local (local) sau în Vercel → Settings → Environment Variables, apoi un redeploy.");
   }
   client = createClient(url, key, {
     auth: { persistSession: true, autoRefreshToken: true, storageKey: "punte-auth" },

@@ -11,6 +11,7 @@ import { LineDemo } from "@/components/punte/line-demo";
 import { StationBand } from "@/components/punte/station-band";
 import { useAuth } from "@/hooks/use-auth";
 import { ASL_CREDIT } from "@/lib/asl/glossary";
+import { supabaseConfigured } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
 
 /** Intrarea în Punte: contul întâi. Ecranele partajate (masa, clasa) intră doar cu codul. */
@@ -60,6 +61,12 @@ export default function HomeScreen({ next }: { next?: string }) {
         </div>
 
         <div className="flex flex-col gap-5 lg:order-1">
+          {!supabaseConfigured() ? (
+            <p role="alert" className="rounded-md bg-danger-soft px-4 py-3 font-bold text-danger-ink">
+              Aplicația nu e conectată la Supabase: lipsesc NEXT_PUBLIC_SUPABASE_URL și NEXT_PUBLIC_SUPABASE_ANON_KEY. Adaugă-le în Vercel →
+              Settings → Environment Variables, apoi fă un redeploy.
+            </p>
+          ) : null}
           <section aria-label="Contul tău" className="overflow-hidden rounded-md border border-steel/80 bg-white">
             <AuthForm next={next} />
           </section>

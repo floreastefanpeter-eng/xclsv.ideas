@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import type { Session } from "@supabase/supabase-js";
-import { getSupabase } from "@/lib/supabase/client";
+import { getSupabase, supabaseConfigured } from "@/lib/supabase/client";
 import type { AccountRole, Profile } from "@/lib/types";
 
 export type AuthState =
@@ -46,6 +46,11 @@ export function useAuth() {
 
   useEffect(() => {
     let cancelled = false;
+    // Fără configurare Supabase (de ex. variabile lipsă pe Vercel): utilizatorul vede formularul, nu o pagină căzută.
+    if (!supabaseConfigured()) {
+      const t = setTimeout(() => setState({ status: "signed-out" }), 0);
+      return () => clearTimeout(t);
+    }
     const supabase = getSupabase();
     supabase.auth.getSession().then(async ({ data }) => {
       const next = await resolve(data.session);
