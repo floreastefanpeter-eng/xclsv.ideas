@@ -1,4 +1,20 @@
-export type Role = "teacher" | "student" | "class";
+/** Rolul pe canal. „desk” = ecranul de pe masa elevului; în baza de date intră ca „class”. */
+export type Role = "teacher" | "student" | "class" | "desk";
+
+export type AccountRole = "teacher" | "student";
+
+export interface Profile {
+  id: string;
+  role: AccountRole;
+  display_name: string;
+  school: string | null;
+  language: string;
+}
+
+export interface GlossaryEntry {
+  term: string;
+  explanation: string;
+}
 
 export type SemaforState = "neutru" | "semneaza" | "intrebare" | "inteles" | "neinteles";
 
@@ -12,6 +28,8 @@ export interface Lesson {
   subject: string;
   title: string;
   terms: string[];
+  /** Termenii extrași automat de AI, cu explicații simple. */
+  glossary: GlossaryEntry[];
   student_name: string;
   teacher_id: string;
   status: "active" | "ended";
@@ -21,12 +39,26 @@ export interface Lesson {
 
 export interface MessageMeta {
   signId?: string;
+  /** Cuvântul din dicționarul de semne (de exemplu „AJUTOR”). */
+  word?: string;
   fromDictionary?: boolean;
   confidence?: number;
   manual?: boolean;
   prosody?: { rate: number; pitch: number };
   voice?: { name: string | null; style: VoiceStyle };
-  demo?: boolean;
+  /** Recunoașterea: modelul ASL open source sau dicționarul antrenat de elev. */
+  engine?: "asl" | "dictionar";
+  /** Glosa ASL recunoscută (de exemplu „thankyou”). */
+  asl?: string;
+  /** Primele 3 variante ale modelului: [glosă, probabilitate]. */
+  top?: [string, number][];
+  /** Semnul a aprins insigna profesorului. */
+  alert?: boolean;
+  /** Mesaj de sistem: semn făcut, dar nerecunoscut. */
+  unknown?: boolean;
+  /** Mesaj de sistem: profesorul a confirmat alerta pentru mesajul cu acest id. */
+  ackOf?: string;
+  latencyMs?: number;
 }
 
 export interface Message {
@@ -63,7 +95,7 @@ export interface BroadcastEvents {
   semafor: { state: SemaforState };
   caption_interim: { text: string };
   buzz: { kind: BuzzKind; text?: string };
-  teacher_alert: { signId: string; text: string; state: SemaforState };
+  teacher_alert: { signId: string; text: string; state: SemaforState | null; word?: string };
   teacher_alert_ack: { signId?: string };
   pending_sign: { signId: string; text: string };
   pending_cancel: Record<string, never>;

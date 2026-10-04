@@ -1,59 +1,123 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import type { HandLandmarker } from "@mediapipe/tasks-vision";
-import type { HandFrame } from "@/lib/knn";
+import type { HandLandmarker, HolisticLandmarker } from "@mediapipe/tasks-vision";
+import type { HandFrame, Landmark } from "@/lib/knn";
+import { holisticFrame } from "@/lib/asl/preprocess";
+import { HandSmoother } from "@/lib/one-euro";
+import { getVision, withDelegateFallback as withFallback } from "@/lib/vision";
 
-const MP_VERSION = "0.10.14";
-const WASM_URL = `https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@${MP_VERSION}/wasm`;
-const MODEL_URL =
+const HAND_MODEL_URL =
   "https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task";
+const HOLISTIC_MODEL_URL =
+  "https://storage.googleapis.com/mediapipe-models/holistic_landmarker/holistic_landmarker/float16/latest/holistic_landmarker.task";
 
 export type TrackerStatus = "idle" | "loading" | "ready" | "denied" | "error";
+export type TrackerMode = "hands" | "holistic";
 
-/** O singură instanță HandLandmarker per pagină (încărcarea modelului durează). */
-let landmarkerPromise: Promise<{ landmarker: HandLandmarker; connections: { start: number; end: number }[] }> | null =
-  null;
-
-async function getLandmarker() {
-  if (landmarkerPromise) return landmarkerPromise;
-  landmarkerPromise = (async () => {
-    const { FilesetResolver, HandLandmarker } = await import("@mediapipe/tasks-vision");
-    const vision = await FilesetResolver.forVisionTasks(WASM_URL);
-    const create = (delegate: "GPU" | "CPU") =>
-      HandLandmarker.createFromOptions(vision, {
-        baseOptions: { modelAssetPath: MODEL_URL, delegate },
-        runningMode: "VIDEO",
-        numHands: 2,
-        minHandDetectionConfidence: 0.5,
-        minHandPresenceConfidence: 0.5,
-        minTrackingConfidence: 0.5,
-      });
-    let landmarker: HandLandmarker;
-    try {
-      landmarker = await create("GPU");
-    } catch {
-      landmarker = await create("CPU");
-    }
-    return { landmarker, connections: HandLandmarker.HAND_CONNECTIONS };
-  })();
-  landmarkerPromise.catch(() => {
-    landmarkerPromise = null;
-  });
-  return landmarkerPromise;
+export interface VisionFrame {
+  hands: HandFrame;
+  /** Cadrul Holistic (543 × 2) pentru modelul ASL; doar în modul „holistic”. */
+  holistic: Float32Array | null;
 }
 
+type Connection = { start: number; end: number };
+
+interface Tools {
+  detect: (video: HTMLVideoElement, ts: number) => { hands: HandFrame; holistic: Float32Array | null; shoulders: number | null; posePresent: boolean };
+  connections: Connection[];
+}
+
+const toolCache = new Map<TrackerMode, Promise<Tools>>();
+
+async function getTools(mode: TrackerMode): Promise<Tools> {
+  const cached = toolCache.get(mode);
+  if (cached) return cached;
+  const promise = (async (): Promise<Tools> => {
+    const { mp, vision } = await getVision();
+    const connections = mp.HandLandmarker.HAND_CONNECTIONS;
+
+    if (mode === "hands") {
+      const landmarker: HandLandmarker = await withFallback((delegate) =>
+        mp.HandLandmarker.createFromOptions(vision, {
+          baseOptions: { modelAssetPath: HAND_MODEL_URL, delegate },
+          runningMode: "VIDEO",
+          numHands: 2,
+          minHandDetectionConfidence: 0.55,
+          minHandPresenceConfidence: 0.55,
+          minTrackingConfidence: 0.55,
+        }),
+      );
+      return {
+        connections,
+        detect: (video, ts) => {
+          const r = landmarker.detectForVideo(video, ts);
+          return {
+            hands: {
+              landmarks: r.landmarks ?? [],
+              handedness: (r.handedness ?? r.handednesses ?? []).map((h) => h[0]?.categoryName ?? ""),
+            },
+            holistic: null,
+            shoulders: null,
+            posePresent: false,
+          };
+        },
+      };
+    }
+
+    const landmarker: HolisticLandmarker = await withFallback((delegate) =>
+      mp.HolisticLandmarker.createFromOptions(vision, {
+        baseOptions: { modelAssetPath: HOLISTIC_MODEL_URL, delegate },
+        runningMode: "VIDEO",
+      }),
+    );
+    return {
+      connections,
+      detect: (video, ts) => {
+        const r = landmarker.detectForVideo(video, ts);
+        const left = r.leftHandLandmarks?.[0];
+        const right = r.rightHandLandmarks?.[0];
+        const landmarks: Landmark[][] = [];
+        const handedness: string[] = [];
+        if (left?.length) {
+          landmarks.push(left);
+          handedness.push("Left");
+        }
+        if (right?.length) {
+          landmarks.push(right);
+          handedness.push("Right");
+        }
+        const pose = r.poseLandmarks?.[0];
+        const shoulders = pose?.[11] && pose?.[12] ? Math.hypot(pose[11].x - pose[12].x, pose[11].y - pose[12].y) : null;
+        return {
+          hands: { landmarks, handedness },
+          holistic: holisticFrame(r),
+          shoulders,
+          posePresent: !!pose?.length,
+        };
+      },
+    };
+  })();
+  toolCache.set(mode, promise);
+  promise.catch(() => toolCache.delete(mode));
+  return promise;
+}
+
+/** Monotonic între toate camerele și modurile (MediaPipe cere timestamp-uri crescătoare). */
+let clock = 0;
+
 /**
- * Camera + MediaPipe HandLandmarker (2 mâini), rulat doar în browser.
- * Desenează scheletul mâinilor peste video și trimite fiecare cadru către onFrame.
+ * Camera + MediaPipe (HandLandmarker sau HolisticLandmarker), rulat doar în browser.
+ * Desenează scheletul mâinilor peste video, oferă un ghid de încadrare și trimite fiecare cadru la onFrame.
  * Video-ul nu se înregistrează și nu se trimite nicăieri.
  */
-export function useHandTracker(onFrame: (frame: HandFrame) => void, color = "#60A5FA") {
+export function useHandTracker(onFrame: (frame: VisionFrame) => void, color = "#6C93FF", mode: TrackerMode = "hands") {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [status, setStatus] = useState<TrackerStatus>("idle");
   const [error, setError] = useState<string | null>(null);
   const [handsVisible, setHandsVisible] = useState(0);
+  const [hint, setHint] = useState<string | null>(null);
   const onFrameRef = useRef(onFrame);
   const streamRef = useRef<MediaStream | null>(null);
   const rafRef = useRef<number | null>(null);
@@ -70,16 +134,16 @@ export function useHandTracker(onFrame: (frame: HandFrame) => void, color = "#60
     if (videoRef.current) videoRef.current.srcObject = null;
     setStatus("idle");
     setHandsVisible(0);
+    setHint(null);
   }, []);
 
   const start = useCallback(async () => {
+    if (rafRef.current) cancelAnimationFrame(rafRef.current);
     setError(null);
     setStatus("loading");
     if (!navigator.mediaDevices?.getUserMedia) {
       setStatus("error");
-      setError(
-        "Browserul nu permite accesul la cameră. Pe telefon, pagina trebuie deschisă prin HTTPS (vezi README).",
-      );
+      setError("Browserul nu permite accesul la cameră. Pe telefon, pagina trebuie deschisă prin HTTPS (vezi README).");
       return;
     }
     let stream: MediaStream;
@@ -100,49 +164,87 @@ export function useHandTracker(onFrame: (frame: HandFrame) => void, color = "#60
       );
       return;
     }
+    streamRef.current?.getTracks().forEach((t) => t.stop());
     streamRef.current = stream;
     const video = videoRef.current;
     if (!video) return;
     video.srcObject = stream;
     await video.play().catch(() => undefined);
 
-    let tools: Awaited<ReturnType<typeof getLandmarker>>;
+    let tools: Tools;
     try {
-      tools = await getLandmarker();
+      tools = await getTools(mode);
     } catch {
       setStatus("error");
-      setError("Nu am putut încărca modelul de recunoaștere a mâinilor. Verifică conexiunea la internet.");
+      setError("Nu am putut încărca modelul de recunoaștere. Verifică conexiunea la internet.");
       return;
     }
     setStatus("ready");
 
+    const smoother = new HandSmoother();
     let lastTime = -1;
+    let frameNo = 0;
+    let noPersonFrames = 0;
+    let brightness = 128;
+    const probe = document.createElement("canvas");
+    probe.width = 32;
+    probe.height = 24;
+    const probeCtx = probe.getContext("2d", { willReadFrequently: true });
+
     const loop = () => {
       rafRef.current = requestAnimationFrame(loop);
       const v = videoRef.current;
       const canvas = canvasRef.current;
       if (!v || v.readyState < 2 || v.currentTime === lastTime) return;
       lastTime = v.currentTime;
-      const result = tools.landmarker.detectForVideo(v, performance.now());
-      const landmarks = result.landmarks ?? [];
-      const handedness = (result.handedness ?? result.handednesses ?? []).map((h) => h[0]?.categoryName ?? "");
-      if (canvas) drawHands(canvas, v, landmarks, tools.connections, color);
-      setHandsVisible((n) => (n === landmarks.length ? n : landmarks.length));
-      onFrameRef.current({ landmarks, handedness });
+      clock = Math.max(clock + 1, performance.now());
+      const raw = tools.detect(v, clock);
+      // Mâinile netezite (One Euro) pentru desen și dicționar; cadrul Holistic rămâne brut pentru modelul ASL.
+      const r = { ...raw, hands: { ...raw.hands, landmarks: smoother.apply(raw.hands.landmarks, raw.hands.handedness, clock) } };
+      if (canvas) drawHands(canvas, v, r.hands.landmarks, tools.connections, color);
+      setHandsVisible((n) => (n === r.hands.landmarks.length ? n : r.hands.landmarks.length));
+
+      // Ghidul de încadrare: lumină, distanță, mâini ieșite din cadru.
+      frameNo++;
+      if (probeCtx && frameNo % 30 === 0) {
+        probeCtx.drawImage(v, 0, 0, 32, 24);
+        const px = probeCtx.getImageData(0, 0, 32, 24).data;
+        let sum = 0;
+        for (let i = 0; i < px.length; i += 4) sum += 0.299 * px[i] + 0.587 * px[i + 1] + 0.114 * px[i + 2];
+        brightness = sum / (px.length / 4);
+      }
+      const person = r.posePresent || r.hands.landmarks.length > 0;
+      noPersonFrames = person ? 0 : noPersonFrames + 1;
+      const edge = r.hands.landmarks.some((h) => h.some((p) => p.x < 0.02 || p.x > 0.98 || p.y < 0.02 || p.y > 0.98));
+      const next =
+        brightness < 55
+          ? "Lumină slabă — aprinde o lumină în fața ta"
+          : noPersonFrames > 45
+            ? "Nu te văd — așază-te în fața camerei"
+            : r.shoulders !== null && r.shoulders > 0.62
+              ? "Prea aproape — dă-te puțin înapoi"
+              : r.shoulders !== null && r.shoulders < 0.16
+                ? "Prea departe — vino mai aproape"
+                : edge
+                  ? "Mâna iese din cadru"
+                  : null;
+      setHint((h) => (h === next ? h : next));
+
+      onFrameRef.current({ hands: r.hands, holistic: r.holistic });
     };
     loop();
-  }, [color]);
+  }, [color, mode]);
 
   useEffect(() => stop, [stop]);
 
-  return { videoRef, canvasRef, status, error, handsVisible, start, stop };
+  return { videoRef, canvasRef, status, error, handsVisible, hint, start, stop };
 }
 
 function drawHands(
   canvas: HTMLCanvasElement,
   video: HTMLVideoElement,
   hands: { x: number; y: number }[][],
-  connections: { start: number; end: number }[],
+  connections: Connection[],
   color: string,
 ) {
   const w = video.videoWidth;

@@ -3,7 +3,7 @@ import type { SemaforState } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 /**
- * Insigna (elev = albastru, profesor = portocaliu) cu LED-ul semafor.
+ * Insigna: plăcuța liniei (elev = albastru, profesor = roșu) cu LED-ul semaforului.
  * Culoarea are mereu și o etichetă text.
  */
 export function Insigna({
@@ -30,26 +30,24 @@ export function Insigna({
     <section
       aria-label={title}
       className={cn(
-        "relative overflow-hidden rounded-3xl p-4 text-white shadow-lg sm:p-5",
-        variant === "elev" ? "bg-elev" : "bg-gradient-to-br from-prof to-prof-dark",
-        alert && "badge-alert ring-4 ring-sem-neinteles",
+        "relative overflow-hidden rounded-xl p-4 text-white shadow-[0_14px_30px_-18px_rgba(13,22,38,0.6)] sm:p-5",
+        variant === "elev" ? "bg-elev" : "bg-prof",
+        alert && "badge-alert ring-4 ring-amber",
         className,
       )}
     >
-      {/* clema insignei */}
-      <div aria-hidden className="absolute left-1/2 top-2 h-1.5 w-12 -translate-x-1/2 rounded-full bg-white/35" />
-      <div className="flex items-center gap-4 pt-2">
+      <div className="flex items-center gap-4">
         <div
-          className={cn("led size-14 shrink-0 rounded-full border-4 border-white/80 sm:size-16", pulse && "led-pulse")}
+          className={cn("led size-14 shrink-0 rounded-full border-4 border-white/85 sm:size-16", pulse && "led-pulse")}
           style={{ ["--led" as string]: meta.color }}
           aria-hidden
         />
         <div className="min-w-0 flex-1">
-          <p className="text-sm font-bold uppercase tracking-wider text-white/80">{subtitle}</p>
-          <h1 className="truncate font-display text-2xl font-extrabold leading-tight sm:text-3xl">{title}</h1>
-          <p className="mt-0.5 text-lg font-bold" role="status" aria-live="polite">
+          <h1 className="plate truncate text-3xl leading-none sm:text-4xl">{title}</h1>
+          <p className="mt-1.5 text-lg font-bold" role="status" aria-live="polite">
             <span className="sr-only">Stare: </span>
             {meta.label}
+            {subtitle ? <span className="font-normal text-white/80"> · {subtitle}</span> : null}
           </p>
         </div>
       </div>

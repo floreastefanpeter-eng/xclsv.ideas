@@ -56,7 +56,11 @@ export function fallbackSummary(input: {
     `Azi am avut ${input.subject.toLowerCase()}.`,
     `Lecția se numește „${input.title}”.`,
     input.terms.length ? `Cuvinte noi: ${input.terms.join(", ")}.` : "",
-    notUnderstood ? `Profesorul a explicat din nou de ${notUnderstood} ori.` : "",
+    notUnderstood === 1
+      ? "Profesorul a explicat din nou o dată."
+      : notUnderstood > 1
+        ? `Profesorul a explicat din nou de ${notUnderstood} ori.`
+        : "",
     homeworkLine ? `Ai temă. ${homeworkLine}` : "Nu ai temă anunțată.",
   ]
     .filter(Boolean)

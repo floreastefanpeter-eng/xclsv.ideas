@@ -22,7 +22,7 @@ export function BuzzBanner({ buzz }: { buzz: { kind: BuzzKind; text?: string; id
       <div
         key={buzz.id}
         role="alert"
-        className={cn("buzz-shake flex w-full max-w-xl items-center gap-3 rounded-3xl px-5 py-4 shadow-2xl", COLORS[buzz.kind])}
+        className={cn("buzz-shake flex w-full max-w-xl items-center gap-3 rounded-xl px-5 py-4 shadow-2xl", COLORS[buzz.kind])}
       >
         <Icon className="size-10 shrink-0" aria-hidden />
         <div className="min-w-0">

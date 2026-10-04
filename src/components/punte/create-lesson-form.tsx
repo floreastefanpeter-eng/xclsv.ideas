@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Loader2, Plus, X } from "lucide-react";
+import { ChevronDown, Loader2, Plus, Sparkles, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -10,13 +10,16 @@ import { ensureSession, errorMessage, getSupabase } from "@/lib/supabase/client"
 import { SUBJECTS, TEMPLATES } from "@/lib/templates";
 import type { Lesson } from "@/lib/types";
 
+/**
+ * Lecție nouă: profesorul scrie doar materia și titlul. Termenii-cheie sunt opționali —
+ * dacă lipsesc, AI-ul îi extrage din ce spune profesorul în timpul lecției.
+ */
 export function CreateLessonForm() {
   const router = useRouter();
   const [subject, setSubject] = useState("Biologie");
   const [title, setTitle] = useState("");
   const [terms, setTerms] = useState<string[]>([]);
   const [termDraft, setTermDraft] = useState("");
-  const [studentName, setStudentName] = useState("Andrei");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -29,23 +32,23 @@ export function CreateLessonForm() {
     setError(null);
   };
 
-  const addTerm = () => {
-    const parts = termDraft
+  const parseDraft = () =>
+    termDraft
       .split(",")
       .map((s) => s.trim())
       .filter(Boolean);
+
+  const addTerm = () => {
+    const parts = parseDraft();
     if (!parts.length) return;
-    setTerms((prev) => [...new Set([...prev, ...parts])].slice(0, 8));
+    setTerms((prev) => [...new Set([...prev, ...parts])].slice(0, 12));
     setTermDraft("");
   };
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const allTerms = termDraft.trim()
-      ? [...new Set([...terms, ...termDraft.split(",").map((s) => s.trim()).filter(Boolean)])]
-      : terms;
     if (!title.trim()) return setError("Scrie titlul lecției.");
-    if (allTerms.length < 3 || allTerms.length > 8) return setError("Adaugă între 3 și 8 termeni-cheie.");
+    const allTerms = [...new Set([...terms, ...parseDraft()])].slice(0, 12);
     setBusy(true);
     setError(null);
     try {
@@ -54,7 +57,7 @@ export function CreateLessonForm() {
         p_subject: subject,
         p_title: title.trim(),
         p_terms: allTerms,
-        p_student_name: studentName.trim() || "Elevul",
+        p_student_name: null,
       });
       if (rpcError) throw rpcError;
       router.push(`/profesor/${(data as Lesson).code}`);
@@ -65,20 +68,9 @@ export function CreateLessonForm() {
   };
 
   return (
-    <form onSubmit={submit} className="space-y-5" aria-describedby={error ? "create-error" : undefined}>
-      <fieldset>
-        <legend className="mb-2 font-bold">Șabloane pentru demo</legend>
-        <div className="flex flex-wrap gap-2">
-          {TEMPLATES.map((t) => (
-            <Button key={t.id} type="button" variant="outline" onClick={() => applyTemplate(t.id)}>
-              {t.subject} · {t.title}
-            </Button>
-          ))}
-        </div>
-      </fieldset>
-
-      <div className="grid gap-4 sm:grid-cols-2">
-        <div className="space-y-1.5">
+    <form onSubmit={submit} className="flex flex-col gap-4" aria-describedby={error ? "create-error" : undefined}>
+      <div className="grid gap-4 sm:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)]">
+        <div className="flex flex-col gap-1.5">
           <Label htmlFor="subject" className="text-base font-bold">
             Materia
           </Label>
@@ -86,88 +78,96 @@ export function CreateLessonForm() {
             id="subject"
             value={subject}
             onChange={(e) => setSubject(e.target.value)}
-            className="h-11 w-full rounded-lg border border-input bg-white px-3 text-base"
+            className="h-12 w-full rounded-md border border-input bg-white px-3 text-lg"
           >
             {SUBJECTS.map((s) => (
               <option key={s}>{s}</option>
             ))}
           </select>
         </div>
-        <div className="space-y-1.5">
-          <Label htmlFor="student" className="text-base font-bold">
-            Numele elevului
+        <div className="flex flex-col gap-1.5">
+          <Label htmlFor="title" className="text-base font-bold">
+            Titlul lecției
           </Label>
-          <Input id="student" value={studentName} onChange={(e) => setStudentName(e.target.value)} className="bg-white" />
+          <Input id="title" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="de exemplu: Fotosinteza" className="h-12 bg-white text-lg" />
         </div>
       </div>
 
-      <div className="space-y-1.5">
-        <Label htmlFor="title" className="text-base font-bold">
-          Titlul lecției
-        </Label>
-        <Input
-          id="title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          placeholder="de exemplu: Fotosinteza"
-          className="bg-white"
-        />
-      </div>
-
-      <div className="space-y-1.5">
-        <Label htmlFor="term" className="text-base font-bold">
-          Termeni-cheie <span className="font-normal text-muted-foreground">(3–8, devin „dicționarul clasei”)</span>
-        </Label>
-        <div className="flex gap-2">
-          <Input
-            id="term"
-            value={termDraft}
-            onChange={(e) => setTermDraft(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault();
-                addTerm();
-              }
-            }}
-            placeholder="scrie un termen și apasă Enter"
-            className="bg-white"
-            disabled={terms.length >= 8}
-          />
-          <Button type="button" variant="secondary" onClick={addTerm} disabled={terms.length >= 8}>
-            <Plus aria-hidden />
-            Adaugă
+      <div className="flex flex-wrap items-center gap-2">
+        <span className="text-sm font-bold text-muted-foreground">Șabloane:</span>
+        {TEMPLATES.map((t) => (
+          <Button key={t.id} type="button" variant="outline" size="sm" onClick={() => applyTemplate(t.id)} className="bg-white">
+            {t.subject} · {t.title}
           </Button>
-        </div>
-        {terms.length ? (
-          <ul className="flex flex-wrap gap-2 pt-1" aria-label="Termenii lecției">
-            {terms.map((t, i) => (
-              <li key={t} className="inline-flex items-center gap-1 rounded-full bg-elev-soft py-1 pl-3 pr-1 font-bold text-elev">
-                {i === 0 ? <span className="sr-only">Termen principal: </span> : null}
-                {t}
-                <button
-                  type="button"
-                  onClick={() => setTerms((prev) => prev.filter((x) => x !== t))}
-                  className="inline-flex size-9 items-center justify-center rounded-full hover:bg-white"
-                  aria-label={`Șterge termenul ${t}`}
-                >
-                  <X className="size-4" aria-hidden />
-                </button>
-              </li>
-            ))}
-          </ul>
-        ) : null}
-        <p className="text-sm text-muted-foreground">Primul termen e folosit de semnul „Termen” al elevului.</p>
+        ))}
       </div>
+
+      <p className="flex items-start gap-2 rounded-md bg-elev-soft px-3 py-2.5 text-elev-dark">
+        <Sparkles className="mt-0.5 size-5 shrink-0" aria-hidden />
+        <span>
+          <strong>Termenii-cheie se notează singuri.</strong> Punte îi extrage din ce spui în timpul lecției și îi explică
+          simplu pe ecranul elevului.
+        </span>
+      </p>
+
+      <details className="group rounded-md border border-border bg-white" open={terms.length > 0}>
+        <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between gap-2 px-3 font-bold [&::-webkit-details-marker]:hidden">
+          Vrei să adaugi tu termeni? <span className="font-normal text-muted-foreground">(opțional)</span>
+          <ChevronDown className="ml-auto size-5 transition-transform group-open:rotate-180" aria-hidden />
+        </summary>
+        <div className="flex flex-col gap-2 border-t border-border p-3">
+          <Label htmlFor="term" className="sr-only">
+            Termen nou
+          </Label>
+          <div className="flex gap-2">
+            <Input
+              id="term"
+              value={termDraft}
+              onChange={(e) => setTermDraft(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  addTerm();
+                }
+              }}
+              placeholder="un termen, apoi Enter"
+              className="h-11 bg-white"
+              disabled={terms.length >= 12}
+            />
+            <Button type="button" variant="secondary" onClick={addTerm} disabled={terms.length >= 12}>
+              <Plus aria-hidden />
+              Adaugă
+            </Button>
+          </div>
+          {terms.length ? (
+            <ul className="flex flex-wrap gap-2" aria-label="Termenii adăugați">
+              {terms.map((t) => (
+                <li key={t} className="inline-flex items-center gap-1 rounded-md bg-elev-soft py-1 pl-3 pr-1 font-bold text-elev-dark">
+                  {t}
+                  <button
+                    type="button"
+                    onClick={() => setTerms((prev) => prev.filter((x) => x !== t))}
+                    className="inline-flex size-9 items-center justify-center rounded-md hover:bg-white"
+                    aria-label={`Șterge termenul ${t}`}
+                  >
+                    <X className="size-4" aria-hidden />
+                  </button>
+                </li>
+              ))}
+            </ul>
+          ) : null}
+        </div>
+      </details>
 
       {error ? (
-        <p id="create-error" role="alert" className="rounded-xl bg-[#FEE2E2] px-3 py-2 font-bold text-[#991B1B]">
+        <p id="create-error" role="alert" className="rounded-md bg-danger-soft px-3 py-2 font-bold text-danger-ink">
           {error}
         </p>
       ) : null}
 
       <Button type="submit" size="lg" className="w-full bg-prof hover:bg-prof-dark" disabled={busy}>
         {busy ? <Loader2 className="animate-spin" aria-hidden /> : null}
-        Creează lecția
+        Pornește lecția
       </Button>
     </form>
   );

@@ -10,7 +10,7 @@ export function LessonQr({ code, size = 220, className }: { code: string; size?:
   const url = `${origin}/j/${code}`;
   return (
     <div className={cn("flex flex-col items-center gap-3", className)}>
-      <div className="rounded-2xl bg-white p-3 shadow-sm">
+      <div className="rounded-lg bg-white p-3 border border-border">
         {origin ? (
           <QRCodeSVG value={url} size={size} level="M" marginSize={1} title={`Cod QR pentru lecția ${code}`} />
         ) : (
@@ -18,7 +18,7 @@ export function LessonQr({ code, size = 220, className }: { code: string; size?:
         )}
       </div>
       <p className="text-center">
-        <span className="block text-sm font-bold uppercase tracking-wider text-muted-foreground">Codul lecției</span>
+        <span className="block text-sm font-bold text-muted-foreground">Codul lecției</span>
         <span className="font-mono text-4xl font-black tracking-[0.25em]" aria-label={code.split("").join(" ")}>
           {code}
         </span>

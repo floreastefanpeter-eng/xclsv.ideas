@@ -1,26 +1,27 @@
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
-export function PunteMark({ className }: { className?: string }) {
+/** Marca Punte: linia roșie (profesorul) și linia albastră (elevul) se întâlnesc în stația de corespondență. */
+export function PunteMark({ className, outlined }: { className?: string; outlined?: boolean }) {
   return (
     <svg viewBox="0 0 40 40" aria-hidden="true" className={cn("size-9", className)}>
-      <rect width="40" height="40" rx="11" fill="#14202B" />
-      <path d="M6 27c4-9 9-13 14-13s10 4 14 13" fill="none" stroke="#1D4ED8" strokeWidth="4" strokeLinecap="round" />
-      <path d="M6 27h28" stroke="#C2410C" strokeWidth="4" strokeLinecap="round" />
-      <path d="M13 27v-6M20 27v-9M27 27v-6" stroke="#EEF1F4" strokeWidth="2.5" strokeLinecap="round" />
+      <rect x="1" y="1" width="38" height="38" rx="6" fill="#0D1626" stroke={outlined ? "#C9D1DE" : "none"} strokeWidth="2" />
+      <path d="M5 29 L13 21 H20" fill="none" stroke="#D4141C" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M20 21 H27 L35 13" fill="none" stroke="#3F6FF0" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
+      <circle cx="20" cy="21" r="5.6" fill="#FFFFFF" stroke="#0D1626" strokeWidth="2.2" />
     </svg>
   );
 }
 
-export function Logo({ className, dark }: { className?: string; dark?: boolean }) {
+export function Logo({ className, dark, href = "/" }: { className?: string; dark?: boolean; href?: string }) {
   return (
     <Link
-      href="/"
-      className={cn("inline-flex items-center gap-2.5 rounded-lg", dark ? "text-white" : "text-ink", className)}
+      href={href}
+      className={cn("inline-flex items-center gap-2.5 rounded-md", dark ? "text-white" : "text-ink", className)}
       aria-label="Punte — pagina principală"
     >
-      <PunteMark />
-      <span className="font-display text-2xl font-extrabold tracking-tight">Punte</span>
+      <PunteMark outlined={dark} />
+      <span className="plate text-[1.65rem] leading-none">Punte</span>
     </Link>
   );
 }

@@ -1,13 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Hand, Sparkles } from "lucide-react";
-import { ConnectionStatus } from "@/components/punte/connection-status";
+import { Hand } from "lucide-react";
+import { GlossaryPanel } from "@/components/punte/glossary-panel";
 import { LessonMemory } from "@/components/punte/lesson-memory";
-import { Logo } from "@/components/punte/logo";
+import { LessonStatsPanel } from "@/components/punte/lesson-stats";
+import { LineMap } from "@/components/punte/line-map";
 import { MessageList } from "@/components/punte/message-list";
 import { Semafor } from "@/components/punte/semafor";
 import { ErrorScreen, LoadingScreen } from "@/components/punte/screen-state";
+import { StationBand } from "@/components/punte/station-band";
 import { useLesson } from "@/hooks/use-lesson";
 import type { SemaforState } from "@/lib/types";
 
@@ -45,43 +47,34 @@ export default function ClassScreen({ code }: { code: string }) {
   const ended = lesson.status === "ended" || !!summary;
 
   return (
-    <main className="flex min-h-dvh flex-1 flex-col gap-5 bg-[#0B1220] px-5 py-5 text-white lg:px-10">
-      <header className="flex flex-wrap items-center justify-between gap-4">
-        <div className="flex flex-wrap items-center gap-5">
-          <Logo dark />
-          <div>
-            <p className="text-lg font-bold uppercase tracking-wider text-white/60">{lesson.subject}</p>
-            <h1 className="font-display text-4xl font-extrabold leading-tight lg:text-5xl">{lesson.title}</h1>
-          </div>
+    <div className="dark-surface flex min-h-dvh flex-1 flex-col bg-night text-white">
+      <StationBand logoHref={`/j/${lesson.code}`} sticky={false}>
+        <div className="flex min-w-0 items-center gap-5">
+          <h1 className="min-w-0 truncate font-display text-2xl font-extrabold leading-tight sm:text-4xl">
+            {lesson.title}
+            <span className="ml-3 hidden text-lg font-bold text-white/60 sm:inline">{lesson.subject}</span>
+          </h1>
+          <span className="code-cells ml-auto hidden rounded bg-white/10 px-3 py-1.5 text-2xl md:inline" aria-label={`Codul lecției ${lesson.code.split("").join(" ")}`}>
+            {lesson.code}
+          </span>
         </div>
-        <div className="flex flex-col items-end gap-2">
-          <span className="rounded-xl bg-white/10 px-4 py-2 font-mono text-2xl font-black tracking-[0.25em]">{lesson.code}</span>
-          <ConnectionStatus connection={connection} connected={connected} show={["teacher", "student"]} dark />
-        </div>
-      </header>
+      </StationBand>
 
-      <div className="grid flex-1 gap-5 xl:grid-cols-[minmax(0,1fr)_420px]">
-        <section aria-label="Conversația live" className="flex min-h-0 flex-col rounded-3xl bg-white/5 p-5">
-          <div className="mb-4 flex flex-wrap gap-4 text-lg font-bold">
+      <main className="grid flex-1 gap-5 px-4 py-5 sm:px-6 lg:px-10 xl:grid-cols-[minmax(0,1fr)_26rem]">
+        <section aria-label="Conversația live" className="flex min-h-0 flex-col rounded-xl bg-white/[0.04] p-4 sm:p-6">
+          <div className="mb-5 flex flex-wrap items-center gap-x-6 gap-y-2 text-lg font-bold">
             <span className="inline-flex items-center gap-2">
-              <span className="size-4 rounded-full bg-[#60A5FA]" aria-hidden />
-              {lesson.student_name}: semne → voce
-            </span>
-            <span className="inline-flex items-center gap-2">
-              <span className="size-4 rounded-full bg-[#FB923C]" aria-hidden />
+              <span aria-hidden className="h-1.5 w-8 rounded-full bg-prof-line" />
               Profesor: voce → text
             </span>
+            <span className="inline-flex items-center gap-2">
+              <span aria-hidden className="h-1.5 w-8 rounded-full bg-elev-line" />
+              {lesson.student_name}: semne → voce
+            </span>
           </div>
-          <MessageList
-            messages={messages.slice(-40)}
-            interim={interim}
-            dark
-            size="xl"
-            className="max-h-[68dvh] flex-1"
-            emptyText="Conversația lecției apare aici."
-          />
+          <MessageList messages={messages.slice(-40)} interim={interim} dark size="xl" className="max-h-[68dvh] flex-1" emptyText="Conversația lecției apare aici." />
           {pending ? (
-            <p className="mt-4 flex items-center gap-3 self-end rounded-2xl bg-[#1E3A8A] px-5 py-3 text-2xl font-bold" role="status">
+            <p className="mt-4 flex items-center gap-3 self-end rounded-lg bg-elev px-5 py-3 text-2xl font-bold" role="status">
               <Hand className="size-7" aria-hidden />
               {lesson.student_name} semnează…
             </p>
@@ -89,28 +82,31 @@ export default function ClassScreen({ code }: { code: string }) {
         </section>
 
         <aside className="flex flex-col gap-5">
-          <section aria-label="Semaforul elevului" className="rounded-3xl bg-white/5 p-5">
-            <h2 className="mb-3 font-display text-2xl font-extrabold">{lesson.student_name}</h2>
+          <div className="rounded-xl bg-white/[0.06] px-4 py-3">
+            <LineMap
+              dark
+              connection={connection}
+              stations={[
+                { key: "t", label: "Profesor", line: "prof", on: connected.teacher },
+                { key: "s", label: lesson.student_name, line: "elev", on: connected.student },
+                { key: "c", label: "Clasa", line: "ink", on: true, here: true },
+              ]}
+            />
+          </div>
+          <section aria-label="Semaforul elevului" className="rounded-xl bg-white/[0.06] p-5">
+            <h2 className="plate mb-3 text-2xl">{lesson.student_name}</h2>
             <Semafor state={pending ? "semneaza" : semafor} dark size="lg" className="sm:grid-cols-2" />
           </section>
-          <section aria-label="Context AI" className="rounded-3xl bg-white/5 p-5">
-            <h2 className="mb-3 flex items-center gap-2 font-display text-2xl font-extrabold">
-              <Sparkles className="size-6 text-[#FBBF24]" aria-hidden />
-              Context AI
-            </h2>
-            <p className="mb-3 text-lg text-white/70">Termenii lecției, în dicționarul clasei:</p>
-            <ul className="flex flex-wrap gap-2">
-              {lesson.terms.map((t) => (
-                <li key={t} className="rounded-full bg-[#1E3A8A] px-4 py-2 text-2xl font-bold">
-                  {t}
-                </li>
-              ))}
-            </ul>
-          </section>
+          <GlossaryPanel lesson={lesson} dark large />
         </aside>
-      </div>
+      </main>
 
-      {ended && summary ? <LessonMemory summary={summary} title={lesson.title} dark large /> : null}
-    </main>
+      {ended && summary ? (
+        <div className="flex flex-col gap-5 px-4 pb-10 sm:px-6 lg:px-10">
+          <LessonMemory summary={summary} title={lesson.title} dark large />
+          <LessonStatsPanel messages={messages} code={lesson.code} dark />
+        </div>
+      ) : null}
+    </div>
   );
 }

@@ -1,8 +1,9 @@
 "use client";
 
-import { Camera, CameraOff, Loader2 } from "lucide-react";
+import { Camera, CameraOff, Loader2, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { TrackerStatus } from "@/hooks/use-hand-tracker";
+import type { PrivacyStatus } from "@/hooks/use-face-privacy";
 import { cn } from "@/lib/utils";
 
 /** Camera cu scheletul mâinilor desenat peste video, eticheta semnului și încrederea. */
@@ -18,6 +19,9 @@ export function CameraView({
   onStart,
   onStop,
   overlay,
+  hint,
+  privacyCanvasRef,
+  privacy,
   className,
 }: {
   videoRef: React.RefObject<HTMLVideoElement | null>;
@@ -31,14 +35,34 @@ export function CameraView({
   onStart: () => void;
   onStop: () => void;
   overlay?: React.ReactNode;
+  /** Ghidul de încadrare: lumină, distanță, mâini în cadru. */
+  hint?: string | null;
+  /** Stratul cu fețele pixelate (toți în afară de elevul înregistrat). */
+  privacyCanvasRef?: React.RefObject<HTMLCanvasElement | null>;
+  privacy?: { status: PrivacyStatus; blurred: number; studentFound: boolean; registered: boolean };
   className?: string;
 }) {
   const active = status === "ready" || status === "loading";
   return (
-    <div className={cn("overflow-hidden rounded-3xl bg-ink text-white", className)}>
+    <div className={cn("overflow-hidden rounded-xl bg-ink text-white", className)}>
       <div className="relative aspect-[4/3] w-full bg-black">
         <video ref={videoRef} playsInline muted className="mirror absolute inset-0 size-full object-cover" aria-hidden />
+        {privacyCanvasRef ? (
+          <canvas ref={privacyCanvasRef} className="mirror absolute inset-0 size-full object-cover" aria-hidden />
+        ) : null}
         <canvas ref={canvasRef} className="mirror absolute inset-0 size-full object-cover" aria-hidden />
+        {privacy && status === "ready" && privacy.status !== "active" ? (
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-ink/80 p-6 text-center backdrop-blur-2xl" role="status">
+            {privacy.status === "error" ? (
+              <p className="font-bold">Protecția fețelor nu a pornit. Imaginea rămâne ascunsă; semnele sunt recunoscute în continuare.</p>
+            ) : (
+              <>
+                <Loader2 className="size-7 animate-spin" aria-hidden />
+                <p className="font-bold">Se pornește protecția fețelor… imaginea e ascunsă până atunci.</p>
+              </>
+            )}
+          </div>
+        ) : null}
         {status === "idle" || status === "denied" || status === "error" ? (
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 p-6 text-center">
             <CameraOff className="size-10 text-white/60" aria-hidden />
@@ -63,8 +87,18 @@ export function CameraView({
         ) : null}
         {status === "ready" ? (
           <div className="absolute inset-x-0 top-0 flex items-start justify-between gap-2 p-3">
-            <span className="rounded-full bg-black/60 px-3 py-1.5 text-sm font-bold">
-              {handsVisible === 0 ? "Nicio mână" : handsVisible === 1 ? "1 mână" : "2 mâini"}
+            <span className="flex flex-col items-start gap-1">
+              <span className="rounded-full bg-black/60 px-3 py-1.5 text-sm font-bold">
+                {handsVisible === 0 ? "Nicio mână" : handsVisible === 1 ? "1 mână" : "2 mâini"}
+              </span>
+              {privacy?.status === "active" ? (
+                <span className="inline-flex items-center gap-1 rounded-full bg-black/60 px-3 py-1.5 text-sm font-bold">
+                  <ShieldCheck className="size-4 text-sem-inteles" aria-hidden />
+                  {privacy.registered
+                    ? `${privacy.studentFound ? "Elev recunoscut" : "Elevul nu e în cadru"} · ${privacy.blurred} fețe estompate`
+                    : `${privacy.blurred} fețe estompate (fără înregistrare)`}
+                </span>
+              ) : null}
             </span>
             <Button size="sm" variant="secondary" onClick={onStop} className="bg-black/60 text-white hover:bg-black/80">
               <CameraOff aria-hidden />
@@ -72,12 +106,17 @@ export function CameraView({
             </Button>
           </div>
         ) : null}
+        {status === "ready" && hint ? (
+          <p className="absolute inset-x-3 bottom-3 rounded-xl bg-sem-intrebare px-3 py-2 text-center font-bold text-ink" role="status" aria-live="polite">
+            {hint}
+          </p>
+        ) : null}
         {overlay}
       </div>
       {active ? (
         <div className="flex items-center gap-3 px-4 py-3">
           <div className="min-w-0 flex-1">
-            <p className="text-sm font-bold uppercase tracking-wider text-white/60">Semn detectat</p>
+            <p className="text-sm font-bold text-white/60">Semn detectat</p>
             <p className="truncate font-display text-2xl font-extrabold" aria-live="polite">
               {label ?? "—"}
             </p>

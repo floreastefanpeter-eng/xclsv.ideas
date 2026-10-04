@@ -20,3 +20,15 @@ export const TrainingScreen = dynamic(() => import("./training-screen"), {
   ssr: false,
   loading: () => <LoadingScreen text="Se încarcă antrenarea…" />,
 });
+export const RegisterScreen = dynamic(() => import("./register-screen"), {
+  ssr: false,
+  loading: () => <LoadingScreen text="Se încarcă înregistrarea…" />,
+});
+export const DashboardScreen = dynamic(() => import("./dashboard-screen"), {
+  ssr: false,
+  loading: () => <LoadingScreen text="Se încarcă panoul…" />,
+});
+export const DeskScreen = dynamic(() => import("./desk-screen"), {
+  ssr: false,
+  loading: () => <LoadingScreen dark />,
+});

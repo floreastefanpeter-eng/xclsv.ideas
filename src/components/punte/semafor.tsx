@@ -30,7 +30,7 @@ export function Semafor({
           <div
             key={s}
             className={cn(
-              "flex items-center gap-2.5 rounded-2xl border-2 px-3 py-2 transition-colors",
+              "flex items-center gap-2.5 rounded-lg border-2 px-3 py-2 transition-colors",
               size === "lg" && "flex-col justify-center px-2 py-4 text-center",
               dark
                 ? active

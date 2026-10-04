@@ -95,7 +95,7 @@ export function useLesson(code: string, role: Role, displayName?: string) {
 
         const { data, error: rpcError } = await supabase.rpc("join_lesson", {
           p_code: code,
-          p_role: role,
+          p_role: role === "desk" ? "class" : role,
           p_display_name: displayName ?? null,
         });
         if (rpcError) throw rpcError;
@@ -159,7 +159,7 @@ export function useLesson(code: string, role: Role, displayName?: string) {
             setConnection("online");
             await channel!.track({
               role,
-              name: displayName ?? (role === "student" ? joined.student_name : role === "teacher" ? "Profesor" : "Clasa"),
+              name: displayName ?? (role === "student" ? joined.student_name : role === "teacher" ? "Profesor" : role === "desk" ? "Masa elevului" : "Clasa"),
               online_at: new Date().toISOString(),
             } satisfies PresenceState);
             // După o reconectare, recuperăm mesajele pierdute.
@@ -237,6 +237,7 @@ export function useLesson(code: string, role: Role, displayName?: string) {
       teacher: presence.some((p) => p.role === "teacher"),
       student: presence.some((p) => p.role === "student"),
       class: presence.some((p) => p.role === "class"),
+      desk: presence.some((p) => p.role === "desk"),
     }),
     [presence],
   );
