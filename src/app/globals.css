@@ -143,12 +143,14 @@
 }
 
 /* Plăcuța de stație: litere condensate, majuscule, ca pe indicatoarele metroului. */
-.plate {
-  font-family: var(--font-archivo), system-ui, sans-serif;
-  font-stretch: 75%;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.02em;
+@layer components {
+  .plate {
+    font-family: var(--font-archivo), system-ui, sans-serif;
+    font-stretch: 75%;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
 }
 
 /* Codul lecției: caractere fixe, ca pe tabela de plecări. */
