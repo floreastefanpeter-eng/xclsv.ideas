@@ -32,3 +32,7 @@ export const DeskScreen = dynamic(() => import("./desk-screen"), {
   ssr: false,
   loading: () => <LoadingScreen dark />,
 });
+export const AdminScreen = dynamic(() => import("./admin-screen"), {
+  ssr: false,
+  loading: () => <LoadingScreen text="Se încarcă administrarea…" />,
+});

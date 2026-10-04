@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { ArrowRight, BookOpen, GraduationCap, Loader2, Monitor, Presentation, ScanFace, Tablet } from "lucide-react";
+import { ArrowRight, BookOpen, GraduationCap, Loader2, Monitor, Presentation, ScanFace, ShieldCheck, Tablet } from "lucide-react";
 import { toast } from "sonner";
 import { buttonVariants } from "@/components/ui/button";
 import { AccountMenu } from "@/components/punte/account-menu";
@@ -241,14 +241,27 @@ export default function DashboardScreen() {
         <>
           <StationBand logoHref="/panou" right={<AccountMenu profile={profile} />}>
             <p className="hidden truncate text-lg font-bold sm:block">
-              {profile.role === "teacher" ? "Panoul profesorului" : "Panoul elevului"}
+              {profile.role === "admin" ? "Panoul administratorului" : profile.role === "teacher" ? "Panoul profesorului" : "Panoul elevului"}
             </p>
           </StationBand>
           <main className="mx-auto w-full max-w-7xl flex-1 px-4 pb-14 pt-6 sm:px-6 lg:pt-10">
             <h1 className="mb-6 font-display text-4xl font-extrabold leading-tight sm:text-5xl">
               Bună, <span className={profile.role === "teacher" ? "text-prof" : "text-elev"}>{firstName(profile.display_name)}</span>
             </h1>
-            {profile.role === "teacher" ? (
+            {profile.role === "admin" ? (
+              <Link
+                href="/admin"
+                className="dark-surface mb-6 flex min-h-16 items-center gap-3 rounded-md bg-ink px-4 py-3 text-white outline-none focus-visible:ring-4 focus-visible:ring-amber"
+              >
+                <ShieldCheck className="size-6 shrink-0 text-amber" aria-hidden />
+                <span className="flex-1">
+                  <span className="plate block text-xl">Administrare</span>
+                  <span className="text-white/75">Utilizatori, lecții, feedback și statistici</span>
+                </span>
+                <ArrowRight className="size-5 shrink-0" aria-hidden />
+              </Link>
+            ) : null}
+            {profile.role !== "student" ? (
               <TeacherDashboard profile={profile} />
             ) : (
               <StudentDashboard profile={profile} updateProfile={updateProfile} />

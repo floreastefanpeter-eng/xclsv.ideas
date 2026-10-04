@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { LayoutDashboard, LogOut, ScanFace, GraduationCap } from "lucide-react";
+import { LayoutDashboard, LogOut, ScanFace, GraduationCap, ShieldCheck } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -29,7 +29,8 @@ const item = "min-h-11 gap-2.5 px-3 text-base";
 /** Meniul contului: cine e conectat, panoul, ieșirea. */
 export function AccountMenu({ profile, dark = true }: { profile: Profile; dark?: boolean }) {
   const router = useRouter();
-  const teacher = profile.role === "teacher";
+  const teacher = profile.role !== "student";
+  const admin = profile.role === "admin";
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
@@ -51,7 +52,7 @@ export function AccountMenu({ profile, dark = true }: { profile: Profile; dark?:
         <DropdownMenuGroup>
           <DropdownMenuLabel className="px-3 py-2 text-sm">
             <span className="block text-base font-bold text-ink">{profile.display_name}</span>
-            {teacher ? "Profesor" : "Elev"}
+            {admin ? "Administrator" : teacher ? "Profesor" : "Elev"}
             {profile.school ? ` · ${profile.school}` : ""}
           </DropdownMenuLabel>
         </DropdownMenuGroup>
@@ -60,6 +61,12 @@ export function AccountMenu({ profile, dark = true }: { profile: Profile; dark?:
           <LayoutDashboard aria-hidden />
           Panoul meu
         </DropdownMenuItem>
+        {admin ? (
+          <DropdownMenuItem className={item} onClick={() => router.push("/admin")}>
+            <ShieldCheck aria-hidden />
+            Administrare
+          </DropdownMenuItem>
+        ) : null}
         {!teacher ? (
           <>
             <DropdownMenuItem className={item} onClick={() => router.push("/elev/antrenare")}>

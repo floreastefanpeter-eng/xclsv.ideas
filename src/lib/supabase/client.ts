@@ -4,6 +4,13 @@ import { createClient, type SupabaseClient, type Session } from "@supabase/supab
 
 let client: SupabaseClient | null = null;
 
+/** Adresa publică (NEXT_PUBLIC_SITE_URL, de ex. https://signals.akiokun.com); local, adresa paginii. */
+export function siteUrl(): string {
+  const configured = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/+$/, "");
+  if (configured) return configured;
+  return typeof window !== "undefined" ? window.location.origin : "";
+}
+
 /** Variabilele Supabase sunt incluse la build (NEXT_PUBLIC_*): lipsa lor se vede, nu blochează pagina. */
 export function supabaseConfigured(): boolean {
   return !!process.env.NEXT_PUBLIC_SUPABASE_URL && !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;

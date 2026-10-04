@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import type { Session } from "@supabase/supabase-js";
-import { getSupabase, supabaseConfigured } from "@/lib/supabase/client";
+import { getSupabase, siteUrl, supabaseConfigured } from "@/lib/supabase/client";
 import type { AccountRole, Profile } from "@/lib/types";
 
 export type AuthState =
@@ -105,7 +105,7 @@ export async function signUp(input: {
     password: input.password,
     options: {
       data: { role: input.role, display_name: input.displayName.trim(), school: input.school?.trim() || null },
-      emailRedirectTo: typeof window !== "undefined" ? `${window.location.origin}/panou` : undefined,
+      emailRedirectTo: `${siteUrl()}/panou`,
     },
   });
   if (error) {
@@ -169,7 +169,11 @@ export async function verifySignupCode(email: string, code: string) {
 }
 
 export async function resendSignupCode(email: string) {
-  const { error } = await getSupabase().auth.resend({ type: "signup", email: email.trim() });
+  const { error } = await getSupabase().auth.resend({
+    type: "signup",
+    email: email.trim(),
+    options: { emailRedirectTo: `${siteUrl()}/panou` },
+  });
   if (error) throw new Error(authError(error.code, error.message));
 }
 
@@ -184,7 +188,7 @@ export async function signOut() {
 
 export async function sendPasswordReset(email: string) {
   const { error } = await getSupabase().auth.resetPasswordForEmail(email.trim(), {
-    redirectTo: typeof window !== "undefined" ? `${window.location.origin}/panou` : undefined,
+    redirectTo: `${siteUrl()}/panou`,
   });
   if (error) throw new Error(authError(error.code, error.message));
 }

@@ -1,11 +1,14 @@
 /** Rolul pe canal. „desk” = ecranul de pe masa elevului; în baza de date intră ca „class”. */
 export type Role = "teacher" | "student" | "class" | "desk";
 
+/** Rolurile alese la înregistrare. */
 export type AccountRole = "teacher" | "student";
+/** Rolul din profil: „admin” se acordă doar de un alt administrator. */
+export type ProfileRole = AccountRole | "admin";
 
 export interface Profile {
   id: string;
-  role: AccountRole;
+  role: ProfileRole;
   display_name: string;
   school: string | null;
   language: string;

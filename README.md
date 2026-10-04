@@ -82,6 +82,8 @@ Pe iOS, browserul nu poate vibra: alertele rămân doar vizuale. Recunoașterea 
 
 ## Conturi, termeni-cheie extrași automat și traducere
 
+- **Administrare** (`/admin`): situația platformei, toți utilizatorii (cu schimbarea rolului), toate lecțiile (încheiere, ștergere, ecranul clasei) și feedback-ul. Primul administrator se numește din SQL (vezi `CLAUDE.md`); apoi un administrator îi poate numi pe alții.
+- **Linkurile din emailuri**: duc la `NEXT_PUBLIC_SITE_URL` (de ex. `https://signals.akiokun.com`). În Supabase → *Authentication → URL Configuration*, pune aceeași adresă la *Site URL* și adaugă `https://signals.akiokun.com/**` la *Redirect URLs*.
 - **Confirmarea prin cod**: după „Cont nou”, SIGNals cere codul de 6 cifre din email (cu „Retrimite codul”). În Supabase → *Authentication → Email Templates → Confirm signup*, adaugă în șablon `{{ .Token }}` (codul); linkul `{{ .ConfirmationURL }}` poate rămâne.
 - **Cont demo, fără limite**: serverul de email inclus în Supabase trimite doar câteva emailuri pe oră. Dacă emailul nu poate pleca, contul se creează oricum, ca **cont demo** pe acel dispozitiv (sesiune anonimă + profil) și funcționează complet. Pentru o clasă reală: *Authentication → SMTP Settings* cu un server propriu (de ex. Resend) și limite mai mari la *Rate Limits*, sau oprește „Confirm email” pentru demo.
 - **Conturi** (`/`): *Intră în cont* sau *Cont nou* (profesor sau elev). Un trigger Supabase creează profilul (`profiles`: rol, nume, școală, limbă). Ecranele profesorului și elevului cer cont; masa elevului și proiectorul intră doar cu codul.
