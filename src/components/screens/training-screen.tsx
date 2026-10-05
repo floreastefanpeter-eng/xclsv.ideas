@@ -64,8 +64,10 @@ const PRESENTATION_SIGNS = [
 const OLD_PRESENTATION_IDS = ["w_eu_elev", "w_vianu"];
 
 export default function TrainingScreen() {
-  const { profile, samples, moving, dictionary, setProfile, setSamples, addMoving, resetMoving, addWord, removeWord, sync } =
+  const { profile, samples, moving, dictionary, setProfile, setSamples, addMoving, resetMoving, addWord, removeWord, sync, account } =
     useSignProfile();
+  /** Fără cont real (anonim sau cont demo), semnele rămân doar pe acest dispozitiv. */
+  const deviceOnly = !!account?.anonymous;
   const registration = useRegistration();
   const [phase, setPhase] = useState<Phase>({ kind: "idle" });
   const [testMode, setTestMode] = useState(false);
@@ -379,17 +381,43 @@ export default function TrainingScreen() {
     </StationBand>
     <main className="mx-auto grid w-full max-w-7xl flex-1 gap-5 px-4 pb-10 pt-4 sm:px-6 lg:grid-cols-[420px_minmax(0,1fr)]">
       <div className="flex flex-col gap-4 lg:sticky lg:top-24 lg:h-fit">
-        <header className="flex items-center justify-end gap-3">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 text-sm font-bold" role="status">
-            {sync === "saved" ? (
-              <Cloud className="size-4 text-ink" aria-hidden />
-            ) : sync === "saving" || sync === "loading" ? (
-              <Loader2 className="size-4 animate-spin" aria-hidden />
-            ) : (
-              <CloudOff className="size-4 text-prof" aria-hidden />
+        <header className="flex flex-col gap-2">
+          <span
+            className={cn(
+              "inline-flex min-h-10 items-center gap-2 self-end rounded-lg border px-3 py-1.5 text-sm font-semibold",
+              sync === "local" || deviceOnly ? "border-prof/40 text-prof-dark" : "border-border text-ink",
             )}
-            {sync === "saved" ? "Salvat în cont" : sync === "saving" ? "Se salvează…" : sync === "loading" ? "Se încarcă…" : "Salvat doar local"}
+            role="status"
+          >
+            {sync === "saving" || sync === "loading" ? (
+              <Loader2 className="size-4 animate-spin" aria-hidden />
+            ) : sync === "saved" && !deviceOnly ? (
+              <Cloud className="size-4" aria-hidden />
+            ) : (
+              <CloudOff className="size-4" aria-hidden />
+            )}
+            {sync === "loading"
+              ? "Se încarcă din cloud…"
+              : sync === "saving"
+                ? "Se salvează în cloud…"
+                : sync === "local"
+                  ? "Fără conexiune: salvat doar pe acest dispozitiv"
+                  : deviceOnly
+                    ? "Salvat doar pe acest dispozitiv"
+                    : `Salvat în cloud · ${account?.email ?? "contul tău"}`}
           </span>
+          {deviceOnly && sync !== "loading" ? (
+            <div className="rounded-lg border border-prof/30 bg-prof-soft p-3 text-sm" role="note">
+              <p className="font-semibold text-ink">Nu ești conectat cu un cont.</p>
+              <p className="mt-0.5 text-ink/75">
+                Intră în contul de elev ca dicționarul să se salveze în cloud și să fie gata pe orice telefon, la demo. Semnele
+                antrenate deja aici se mută automat în cont.
+              </p>
+              <Link href="/?next=/elev/antrenare" className={cn(buttonVariants({ size: "sm" }), "mt-2")}>
+                Intră în cont
+              </Link>
+            </div>
+          ) : null}
         </header>
         <div>
           <h1 className="font-display text-3xl font-semibold">Dicționarul de semne</h1>

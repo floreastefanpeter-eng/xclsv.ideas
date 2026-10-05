@@ -30,15 +30,20 @@ export function getSupabase(): SupabaseClient {
   return client;
 }
 
-let sessionPromise: Promise<Session> | null = null;
+/** Doar crearea sesiunii anonime se face o singură dată în paralel; sesiunea curentă se citește mereu. */
+let anonymousPromise: Promise<Session> | null = null;
 
-/** Fiecare dispozitiv primește automat un user_id prin autentificare anonimă. */
-export function ensureSession(): Promise<Session> {
-  if (sessionPromise) return sessionPromise;
-  sessionPromise = (async () => {
-    const supabase = getSupabase();
-    const { data } = await supabase.auth.getSession();
-    if (data.session) return data.session;
+/**
+ * Sesiunea curentă: contul cu care e conectat utilizatorul sau, dacă nu există, una anonimă
+ * (ecranele partajate). Se citește la fiecare apel, ca după o intrare / ieșire din cont să nu
+ * folosim o sesiune veche (alt user_id, token expirat).
+ */
+export async function ensureSession(): Promise<Session> {
+  const supabase = getSupabase();
+  const { data } = await supabase.auth.getSession();
+  if (data.session) return data.session;
+  if (anonymousPromise) return anonymousPromise;
+  anonymousPromise = (async () => {
     const { data: signed, error } = await supabase.auth.signInAnonymously();
     if (error || !signed.session) {
       const msg =
@@ -49,10 +54,11 @@ export function ensureSession(): Promise<Session> {
     }
     return signed.session;
   })();
-  sessionPromise.catch(() => {
-    sessionPromise = null;
-  });
-  return sessionPromise;
+  // După ce s-a terminat (cu succes sau nu), următorul apel citește din nou sesiunea curentă.
+  anonymousPromise.finally(() => {
+    anonymousPromise = null;
+  }).catch(() => undefined);
+  return anonymousPromise;
 }
 
 /** Mesajul de eroare dintr-o excepție Postgres/RPC, în română dacă e posibil. */
