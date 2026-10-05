@@ -58,6 +58,8 @@ interface FeedbackRow {
   rating: number;
   understood: number | null;
   comment: string | null;
+  quote: string | null;
+  public_quote: boolean;
   created_at: string;
 }
 
@@ -375,6 +377,7 @@ function AdminPanel({ profile }: { profile: Profile }) {
                   <th className={th}>Nota</th>
                   <th className={th}>A înțeles</th>
                   <th className={th}>Comentariu</th>
+                  <th className={th}>Testimonial</th>
                   <th className={th}>Când</th>
                 </tr>
               </thead>
@@ -391,12 +394,24 @@ function AdminPanel({ profile }: { profile: Profile }) {
                     <td className={cn(td, "tabular font-bold")}>{f.rating}/5</td>
                     <td className={cn(td, "tabular")}>{f.understood ? `${f.understood}/5` : "—"}</td>
                     <td className={cn(td, "max-w-md")}>{f.comment || <span className="text-muted-foreground">—</span>}</td>
+                    <td className={cn(td, "max-w-md")}>
+                      {f.quote ? (
+                        <>
+                          „{f.quote}”
+                          <span className={cn("ml-2 rounded px-1.5 py-0.5 text-xs font-semibold", f.public_quote ? "bg-prof text-white" : "bg-muted text-muted-foreground")}>
+                            {f.public_quote ? "public" : "privat"}
+                          </span>
+                        </>
+                      ) : (
+                        <span className="text-muted-foreground">—</span>
+                      )}
+                    </td>
                     <td className={cn(td, "tabular text-sm")}>{when(f.created_at)}</td>
                   </tr>
                 ))}
                 {feedback && !feedback.length ? (
                   <tr>
-                    <td colSpan={6} className="p-5 text-muted-foreground">
+                    <td colSpan={7} className="p-5 text-muted-foreground">
                       Încă nu există feedback.
                     </td>
                   </tr>

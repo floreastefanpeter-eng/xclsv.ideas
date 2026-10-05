@@ -134,6 +134,7 @@ Test local pe telefon: `npx next dev --experimental-https`, apoi `https://<IP-ul
 
 ## Conturi, termeni-cheie extrași automat și traducere
 
+- **Testimoniale** (`/testimoniale`, cu link din meniu și secțiune pe prima pagină): la finalul lecției, profesorul și elevul pot scrie câteva cuvinte și pot bifa acordul de publicare. Pagina arată doar testimonialele cu acord (prenume, rol, școală), prin funcția publică `public_testimonials()`. Nu se inventează testimoniale.
 - **Administrare** (`/admin`): situația platformei, toți utilizatorii (cu schimbarea rolului), toate lecțiile (încheiere, ștergere, ecranul clasei) și feedback-ul. Primul administrator se numește din SQL (vezi `CLAUDE.md`); apoi un administrator îi poate numi pe alții.
 - **Linkurile din emailuri**: duc la `NEXT_PUBLIC_SITE_URL` (de ex. `https://signals.akiokun.com`). În Supabase → *Authentication → URL Configuration*, pune aceeași adresă la *Site URL* și adaugă `https://signals.akiokun.com/**` la *Redirect URLs*.
 - **Confirmarea prin cod**: după „Cont nou”, SIGNals cere codul de 6 cifre din email (cu „Retrimite codul”). În Supabase → *Authentication → Email Templates → Confirm signup*, adaugă în șablon `{{ .Token }}` (codul); linkul `{{ .ConfirmationURL }}` poate rămâne.

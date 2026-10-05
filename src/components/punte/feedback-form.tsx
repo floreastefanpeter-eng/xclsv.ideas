@@ -35,6 +35,8 @@ export function FeedbackForm({ lessonId, role }: { lessonId: string; role: Exclu
   const [rating, setRating] = useState(0);
   const [understood, setUnderstood] = useState(0);
   const [comment, setComment] = useState("");
+  const [quote, setQuote] = useState("");
+  const [publicQuote, setPublicQuote] = useState(false);
   const [state, setState] = useState<"idle" | "saving" | "done">("idle");
   const [error, setError] = useState<string | null>(null);
 
@@ -52,6 +54,9 @@ export function FeedbackForm({ lessonId, role }: { lessonId: string; role: Exclu
         rating,
         understood: understood || null,
         comment: comment.trim() || null,
+        quote: quote.trim() || null,
+        // Se publică doar cu acordul explicit și doar dacă există un text.
+        public_quote: publicQuote && !!quote.trim(),
       });
       if (dbError) throw dbError;
       setState("done");
@@ -65,7 +70,7 @@ export function FeedbackForm({ lessonId, role }: { lessonId: string; role: Exclu
     return (
       <p className="flex items-center gap-2 rounded-xl bg-ok-soft p-4 text-lg font-bold text-ok-ink" role="status">
         <Check className="size-6" aria-hidden />
-        Mulțumim pentru feedback!
+        {publicQuote && quote.trim() ? "Mulțumim! Testimonialul tău apare pe pagina de testimoniale." : "Mulțumim pentru feedback!"}
       </p>
     );
   }
@@ -82,6 +87,25 @@ export function FeedbackForm({ lessonId, role }: { lessonId: string; role: Exclu
       <label className="block">
         <span className="mb-1 block font-bold">Ce ar trebui îmbunătățit? (opțional)</span>
         <Textarea value={comment} onChange={(e) => setComment(e.target.value)} maxLength={1000} className="bg-white text-lg" />
+      </label>
+      <label className="block">
+        <span className="mb-1 block font-bold">
+          {role === "student" ? "Ce le-ai spune altor elevi despre SIGNals?" : "Ce le-ați spune altor profesori despre SIGNals?"}{" "}
+          <span className="font-normal text-muted-foreground">(opțional)</span>
+        </span>
+        <Textarea value={quote} onChange={(e) => setQuote(e.target.value)} maxLength={400} className="bg-white text-lg" />
+      </label>
+      <label className="flex min-h-11 items-start gap-3">
+        <input
+          type="checkbox"
+          checked={publicQuote}
+          onChange={(e) => setPublicQuote(e.target.checked)}
+          disabled={!quote.trim()}
+          className="mt-1 size-5 shrink-0 accent-[var(--color-prof)]"
+        />
+        <span className={cn(!quote.trim() && "text-muted-foreground")}>
+          Sunt de acord ca acest text să apară public pe pagina de testimoniale, cu prenumele și școala mea.
+        </span>
       </label>
       {error ? (
         <p className="font-bold text-sem-neinteles" role="alert">

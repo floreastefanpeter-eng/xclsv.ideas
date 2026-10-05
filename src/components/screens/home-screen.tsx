@@ -10,6 +10,7 @@ import { AuthForm } from "@/components/punte/auth-form";
 import { JoinForm } from "@/components/punte/join-form";
 import { PipelineDemo } from "@/components/punte/pipeline-demo";
 import { StationBand } from "@/components/punte/station-band";
+import { TestimonialsTeaser } from "@/components/punte/testimonials-teaser";
 import { useAuth } from "@/hooks/use-auth";
 import { ASL_CREDIT } from "@/lib/asl/glossary";
 import { supabaseConfigured } from "@/lib/supabase/client";
@@ -18,6 +19,7 @@ import { cn } from "@/lib/utils";
 const NAV = [
   { href: "#flux", label: "Cum funcționează" },
   { href: "#ecran", label: "Conectează un ecran" },
+  { href: "/testimoniale", label: "Testimoniale" },
   { href: "/semne", label: "Ghidul semnelor" },
   { href: "/despre", label: "Despre" },
 ];
@@ -161,6 +163,8 @@ export default function HomeScreen({ next }: { next?: string }) {
             </div>
           </div>
         </section>
+
+        <TestimonialsTeaser />
       </main>
 
       <footer className="border-t border-border">
