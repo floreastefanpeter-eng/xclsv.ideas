@@ -64,6 +64,7 @@ SIGNals începe cu **contul**: profesorul și elevul se înregistrează (email +
 - Aplicația a fost dezvoltată cu ajutorul **Claude** (Anthropic), prin **Claude Code**: cercetarea bibliotecilor open source, arhitectura, codul, migrațiile Supabase, designul interfeței și verificările (TypeScript, ESLint, build, teste în browser). Echipa a stabilit cerințele, a luat deciziile și a testat aplicația.
 - În aplicație, **Claude API** scrie memoria lecției, extrage termenii-cheie și traduce subtitrările (doar pe server; cheia nu ajunge în browser).
 - Designul (roșu, alb, negru) e documentat în `DESIGN.md`, iar contextul produsului în `PRODUCT.md`.
+- Tot ce s-a făcut cu Claude, pas cu pas: [`LUCRUL-CU-CLAUDE.md`](LUCRUL-CU-CLAUDE.md).
 
 ## Instalare
 
