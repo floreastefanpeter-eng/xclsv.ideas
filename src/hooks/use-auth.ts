@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import type { Session } from "@supabase/supabase-js";
-import { getSupabase, siteUrl, supabaseConfigured } from "@/lib/supabase/client";
+import { getSupabase, liveSession, siteUrl, supabaseConfigured } from "@/lib/supabase/client";
 import type { AccountRole, Profile } from "@/lib/types";
 
 export type AuthState =
@@ -52,8 +52,9 @@ export function useAuth() {
       return () => clearTimeout(t);
     }
     const supabase = getSupabase();
-    supabase.auth.getSession().then(async ({ data }) => {
-      const next = await resolve(data.session);
+    // La pornire verificăm că sesiunea din browser aparține unui cont care încă există.
+    liveSession().then(async (session) => {
+      const next = await resolve(session);
       if (!cancelled) setState(next);
     });
     // Profilul contului demo apare după SIGNED_IN: recitim când ni se semnalează.
@@ -135,8 +136,7 @@ function isEmailDeliveryError(code: string | undefined, message: string) {
  */
 export async function createDemoAccount(input: { role: AccountRole; displayName: string; school?: string; email?: string }) {
   const supabase = getSupabase();
-  const { data } = await supabase.auth.getSession();
-  let session = data.session;
+  let session = await liveSession();
   if (session && !session.user.is_anonymous) {
     await supabase.auth.signOut();
     session = null;

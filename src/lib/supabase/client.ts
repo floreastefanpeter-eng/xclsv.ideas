@@ -30,6 +30,34 @@ export function getSupabase(): SupabaseClient {
   return client;
 }
 
+/** Utilizatorii verificați deja pe această pagină (o singură cerere per cont). */
+const verified = new Set<string>();
+
+/**
+ * Sesiunea salvată în browser, dar doar dacă contul ei mai există pe server.
+ * Un cont șters (de exemplu la curățarea datelor de test) lasă în browser o sesiune „moartă”:
+ * o ștergem local, ca aplicația să pornească curat în loc să dea erori.
+ */
+export async function liveSession(): Promise<Session | null> {
+  const supabase = getSupabase();
+  const { data } = await supabase.auth.getSession();
+  const session = data.session;
+  if (!session) return null;
+  if (verified.has(session.user.id)) return session;
+  const { data: user, error } = await supabase.auth.getUser();
+  if (user?.user) {
+    verified.add(session.user.id);
+    return session;
+  }
+  // Doar un răspuns clar de la server (contul nu există / sesiune invalidă), nu o problemă de rețea.
+  const status = (error as { status?: number } | null)?.status;
+  if (status === 401 || status === 403 || status === 404 || error?.code === "user_not_found") {
+    await supabase.auth.signOut({ scope: "local" });
+    return null;
+  }
+  return session;
+}
+
 /** Doar crearea sesiunii anonime se face o singură dată în paralel; sesiunea curentă se citește mereu. */
 let anonymousPromise: Promise<Session> | null = null;
 
@@ -40,8 +68,8 @@ let anonymousPromise: Promise<Session> | null = null;
  */
 export async function ensureSession(): Promise<Session> {
   const supabase = getSupabase();
-  const { data } = await supabase.auth.getSession();
-  if (data.session) return data.session;
+  const session = await liveSession();
+  if (session) return session;
   if (anonymousPromise) return anonymousPromise;
   anonymousPromise = (async () => {
     const { data: signed, error } = await supabase.auth.signInAnonymously();
