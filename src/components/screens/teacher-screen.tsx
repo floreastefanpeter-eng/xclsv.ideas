@@ -25,6 +25,7 @@ import { alertText } from "@/lib/signs";
 import { fallbackSummary } from "@/lib/summary-fallback";
 import { speak, speechSynthesisSupported } from "@/lib/speech";
 import { ensureSession, errorMessage, getSupabase } from "@/lib/supabase/client";
+import { micHelp } from "@/lib/platform";
 import { quickLinesFor } from "@/lib/templates";
 import type { Profile, SemaforState } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -345,7 +346,7 @@ function TeacherLesson({ code, profile }: { code: string; profile: Profile }) {
             <Panel id="vorbeste" tone="prof" title={`Vorbește cu ${name}`} icon={<Mic className="size-5" aria-hidden />} bodyClassName="flex flex-col gap-3">
               {mic.status === "unsupported" ? (
                 <p className="rounded-md bg-warn-soft px-3 py-2 font-bold text-warn-ink" role="status">
-                  Browserul acesta nu are recunoaștere vocală. Folosește Chrome sau Edge, sau scrie mai jos.
+                  {micHelp("unsupported")}
                 </p>
               ) : (
                 <Button

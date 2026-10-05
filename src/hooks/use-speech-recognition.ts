@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { micHelp } from "@/lib/platform";
 import { getRecognitionCtor, type RecognitionLike } from "@/lib/speech";
 
 export type MicStatus = "unsupported" | "off" | "starting" | "listening" | "denied" | "error";
@@ -58,7 +59,8 @@ export function useSpeechRecognition(handlers: {
       if (e.error === "not-allowed" || e.error === "service-not-allowed") {
         wantOn.current = false;
         setStatus("denied");
-        setError("Accesul la microfon a fost refuzat. Permite microfonul din bara de adrese și încearcă din nou.");
+        // Pe iPhone, „service-not-allowed” înseamnă de obicei că dictarea Apple e oprită.
+        setError(micHelp(e.error === "service-not-allowed" ? "dictation" : "denied"));
       } else if (e.error === "audio-capture") {
         wantOn.current = false;
         setStatus("error");

@@ -45,19 +45,21 @@ export function CameraView({
   className?: string;
 }) {
   const active = status === "ready" || status === "loading";
-  // Până știm forma imaginii: 4:3. Apoi exact forma camerei, ca nimic să nu fie tăiat.
+  // Până știm forma imaginii: 4:3. Apoi forma camerei; o imagine verticală (telefon ținut drept)
+  // e tăiată ușor sus și jos, până la 3:4, ca rama să umple lățimea ecranului.
   const [aspect, setAspect] = useState(4 / 3);
+  const frame = Math.max(aspect, 3 / 4);
   const syncAspect = (e: React.SyntheticEvent<HTMLVideoElement>) => {
     const a = videoAspect(e.currentTarget);
     if (a) setAspect(a);
   };
   return (
-    <div className={cn("overflow-hidden rounded-xl bg-ink text-white", className)}>
-      <div
-        className="relative mx-auto bg-black"
-        // Pe telefon, ținut vertical, imaginea e înaltă: limităm înălțimea și micșorăm lățimea proporțional.
-        style={{ aspectRatio: String(aspect), width: `min(100%, calc(70dvh * ${aspect}))` }}
-      >
+    <div
+      className={cn("mx-auto overflow-hidden rounded-xl bg-ink text-white", className)}
+      // Ramă și fundal au aceeași lățime: fără benzi negre laterale. Pe ecrane joase, înălțimea e limitată.
+      style={{ width: `min(100%, calc(78svh * ${frame}))` }}
+    >
+      <div className="relative w-full bg-black" style={{ aspectRatio: String(frame) }}>
         <video
           ref={videoRef}
           playsInline

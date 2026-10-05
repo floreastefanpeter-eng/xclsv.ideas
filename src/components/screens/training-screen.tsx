@@ -47,6 +47,13 @@ type Phase =
   | { kind: "collect"; id: string; count: number }
   | { kind: "moving"; id: string; frames: number };
 
+/** Prezentarea pentru demo: trei semne personale, fiecare rostește o parte din propoziție. */
+const PRESENTATION_SIGNS = [
+  { word: "SALUT", phrase: "Bună!" },
+  { word: "EU ELEV", phrase: "Sunt elev" },
+  { word: "VIANU", phrase: "la Colegiul Național de Informatică Tudor Vianu." },
+];
+
 export default function TrainingScreen() {
   const { profile, samples, moving, dictionary, setProfile, setSamples, addMoving, resetMoving, addWord, removeWord, sync } =
     useSignProfile();
@@ -486,16 +493,34 @@ export default function TrainingScreen() {
         >
           <div className="flex flex-wrap items-baseline justify-between gap-2">
             <h2 className="font-display text-xl font-semibold">Adaugă un semn al tău</h2>
-            <button
-              type="button"
-              className="min-h-11 text-sm font-bold text-elev underline"
-              onClick={() => {
-                setNewWord("PREZENTARE");
-                setNewPhrase("Bună! Sunt elev la Colegiul Național de Informatică Tudor Vianu.");
-              }}
-            >
-              Exemplu: prezentarea mea
-            </button>
+            <span className="flex flex-wrap gap-x-4">
+              <button
+                type="button"
+                className="min-h-11 text-sm font-semibold text-ink underline decoration-ink/30 underline-offset-4 hover:decoration-prof"
+                onClick={() => {
+                  // Prezentarea în 3 semne: fiecare semn rostește o parte a propoziției.
+                  const added = PRESENTATION_SIGNS.map((w) => addWord(w.word, w.phrase)).filter(Boolean).length;
+                  setMessage({
+                    ok: true,
+                    text: added
+                      ? "Am adăugat SALUT, EU ELEV și VIANU. Antrenează-le mai jos, fiecare cu semnul descris în ghid."
+                      : "Cuvintele prezentării sunt deja în dicționar.",
+                  });
+                }}
+              >
+                Prezentare în 3 semne
+              </button>
+              <button
+                type="button"
+                className="min-h-11 text-sm font-semibold text-ink underline decoration-ink/30 underline-offset-4 hover:decoration-prof"
+                onClick={() => {
+                  setNewWord("PREZENTARE");
+                  setNewPhrase("Bună! Sunt elev la Colegiul Național de Informatică Tudor Vianu.");
+                }}
+              >
+                Prezentare într-un semn
+              </button>
+            </span>
           </div>
           <div className="grid gap-3 sm:grid-cols-[minmax(0,0.7fr)_minmax(0,1.3fr)]">
             <div className="space-y-1.5">

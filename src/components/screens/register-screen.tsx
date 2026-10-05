@@ -192,7 +192,7 @@ export default function RegisterScreen() {
           </h2>
           <div
             className="relative mx-auto overflow-hidden rounded-lg bg-black"
-            style={{ aspectRatio: String(aspect), width: `min(100%, calc(70dvh * ${aspect}))` }}
+            style={{ aspectRatio: String(Math.max(aspect, 3 / 4)), width: `min(100%, calc(78svh * ${Math.max(aspect, 3 / 4)}))` }}
           >
             <video
               ref={videoRef}
