@@ -26,7 +26,6 @@ export default function RegisterScreen() {
   const [step, setStep] = useState<Step>(registration ? "done" : "details");
   const [name, setName] = useState(registration?.name ?? "");
   const [consentStudent, setConsentStudent] = useState(!!registration);
-  const [consentGuardian, setConsentGuardian] = useState(!!registration?.consent.guardian);
   const [scanStatus, setScanStatus] = useState<"idle" | "loading" | "scanning" | "error">("idle");
   const [hint, setHint] = useState("Privește camera, singur în cadru.");
   const [count, setCount] = useState(0);
@@ -50,12 +49,12 @@ export default function RegisterScreen() {
     saveRegistration({
       name: name.trim(),
       descriptors: samples.current,
-      consent: { guardian: consentGuardian, at: new Date().toISOString() },
+      consent: { guardian: false, at: new Date().toISOString() },
       createdAt: new Date().toISOString(),
     });
     setStep("done");
     setScanStatus("idle");
-  }, [stopCamera, name, consentGuardian]);
+  }, [stopCamera, name]);
 
   const [aspect, setAspect] = useState(4 / 3);
 
@@ -106,7 +105,7 @@ export default function RegisterScreen() {
     void loop();
   }, [finish]);
 
-  const canContinue = name.trim().length > 0 && consentStudent && consentGuardian;
+  const canContinue = name.trim().length > 0 && consentStudent;
 
   return (
     <>
@@ -164,12 +163,6 @@ export default function RegisterScreen() {
           <label className="flex min-h-11 items-start gap-3">
             <input type="checkbox" checked={consentStudent} onChange={(e) => setConsentStudent(e.target.checked)} className="mt-1 size-6 shrink-0 accent-elev" />
             <span>Sunt de acord ca fața mea să fie folosită astfel, pe acest dispozitiv.</span>
-          </label>
-          <label className="flex min-h-11 items-start gap-3">
-            <input type="checkbox" checked={consentGuardian} onChange={(e) => setConsentGuardian(e.target.checked)} className="mt-1 size-6 shrink-0 accent-elev" />
-            <span>
-              Am peste 16 ani <strong>sau</strong> părintele / tutorele meu a fost informat și și-a dat acordul.
-            </span>
           </label>
 
           <div className="flex flex-wrap gap-2">
@@ -272,7 +265,6 @@ export default function RegisterScreen() {
                 deleteRegistration();
                 setStep("details");
                 setConsentStudent(false);
-                setConsentGuardian(false);
               }}
             >
               <Trash2 aria-hidden />

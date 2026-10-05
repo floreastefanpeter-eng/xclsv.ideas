@@ -141,8 +141,8 @@ export default function AboutPage() {
             înregistrare, toate fețele sunt pixelate. Până pornește protecția, imaginea e ascunsă complet.
           </li>
           <li>
-            Recunoașterea feței folosește date biometrice (art. 9 GDPR). De aceea: consimțământ explicit al elevului și confirmarea
-            acordului părintelui pentru elevii sub 16 ani, un singur scop declarat, iar șablonul feței (5 × 128 de numere, fără nicio
+            Recunoașterea feței folosește date biometrice (art. 9 GDPR). De aceea: consimțământ explicit al elevului pe dispozitiv
+            (pentru minori, acordul părinților se obține de școală înainte de folosire), un singur scop declarat, iar șablonul feței (5 × 128 de numere, fără nicio
             imagine) rămâne <strong>doar în browserul elevului</strong>. Nu ajunge pe server.
           </li>
           <li>Dreptul la ștergere: un buton pe pagina de înregistrare elimină complet șablonul feței.</li>

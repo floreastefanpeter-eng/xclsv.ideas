@@ -49,9 +49,21 @@ type Phase =
 
 /** Prezentarea pentru demo: trei semne personale, fiecare rostește o parte din propoziție. */
 const PRESENTATION_SIGNS = [
-  { word: "SALUT", phrase: "Bună!" },
-  { word: "EU ELEV", phrase: "Sunt elev" },
-  { word: "VIANU", phrase: "la Colegiul Național de Informatică Tudor Vianu." },
+  {
+    word: "SALUT",
+    phrase: "Bună!",
+    hint: "Salutul ASL: palma dreaptă, degetele lipite, la tâmplă, apoi mâna spre în afară. Antrenează cu „Mișcare”.",
+  },
+  {
+    word: "EU ELEV",
+    phrase: "Sunt elev",
+    hint: "Pumnul strâns, pus pe piept, ținut nemișcat. Antrenează cu „Înregistrează 2 s”.",
+  },
+  {
+    word: "VIANU",
+    phrase: "la Colegiul Național de Informatică Tudor Vianu.",
+    hint: "Mâna „Y”: degetul mare și cel mic întinse, celelalte strânse, ținută nemișcat. Antrenează cu „Înregistrează 2 s”.",
+  },
 ];
 
 export default function TrainingScreen() {
@@ -499,11 +511,11 @@ export default function TrainingScreen() {
                 className="min-h-11 text-sm font-semibold text-ink underline decoration-ink/30 underline-offset-4 hover:decoration-prof"
                 onClick={() => {
                   // Prezentarea în 3 semne: fiecare semn rostește o parte a propoziției.
-                  const added = PRESENTATION_SIGNS.map((w) => addWord(w.word, w.phrase)).filter(Boolean).length;
+                  const added = PRESENTATION_SIGNS.map((w) => addWord(w.word, w.phrase, w.hint)).filter(Boolean).length;
                   setMessage({
                     ok: true,
                     text: added
-                      ? "Am adăugat SALUT, EU ELEV și VIANU. Antrenează-le mai jos, fiecare cu semnul descris în ghid."
+                      ? "SALUT, EU ELEV și VIANU sunt în dicționar, cu indicațiile pe card. Dacă le antrenaseși cu alte semne, apasă săgeata circulară (Resetează) pe card și antrenează-le din nou."
                       : "Cuvintele prezentării sunt deja în dicționar.",
                   });
                 }}

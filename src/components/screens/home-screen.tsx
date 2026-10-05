@@ -111,7 +111,7 @@ export default function HomeScreen({ next }: { next?: string }) {
               <AuthForm next={next} />
             </section>
             <p className="px-1 text-xs text-muted-foreground">
-              Video și audio nu părăsesc dispozitivul. Se salvează doar textul conversației.
+              Imaginea camerei nu părăsește dispozitivul și nimic nu se înregistrează. Se salvează doar textul conversației.
             </p>
           </div>
         </section>

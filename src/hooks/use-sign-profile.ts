@@ -176,13 +176,25 @@ export function useSignProfile() {
   );
 
   const addWord = useCallback(
-    (word: string, phrase?: string) => {
+    (word: string, phrase?: string, hint?: string) => {
       const clean = word.trim();
       if (!clean) return null;
       const id = slugify(clean);
       setProfile((p) => {
-        if (BASE_DICTIONARY.some((s) => s.id === id) || p.dictionary.some((w) => w.id === id)) return p;
-        return { ...p, dictionary: [...p.dictionary, { id, word: clean.toUpperCase(), phrase: phrase?.trim() || undefined }] };
+        if (BASE_DICTIONARY.some((s) => s.id === id)) return p;
+        if (p.dictionary.some((w) => w.id === id)) {
+          if (!phrase && !hint) return p;
+          return {
+            ...p,
+            dictionary: p.dictionary.map((w) =>
+              w.id === id ? { ...w, phrase: phrase?.trim() || w.phrase, hint: hint?.trim() || w.hint } : w,
+            ),
+          };
+        }
+        return {
+          ...p,
+          dictionary: [...p.dictionary, { id, word: clean.toUpperCase(), phrase: phrase?.trim() || undefined, hint: hint?.trim() || undefined }],
+        };
       });
       return id;
     },

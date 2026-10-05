@@ -114,6 +114,8 @@ export interface CustomWord {
   id: string;
   word: string;
   phrase?: string;
+  /** Cum se face semnul (apare pe cardul cuvântului). */
+  hint?: string;
 }
 
 export function customToSign(c: CustomWord): SignDef {
@@ -124,6 +126,7 @@ export function customToSign(c: CustomWord): SignDef {
     state: null,
     alert: false,
     category: "personal",
+    hint: c.hint?.trim() || undefined,
   };
 }
 

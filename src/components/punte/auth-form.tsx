@@ -390,8 +390,8 @@ export function AuthForm({ next }: { next?: string }) {
               Creează contul de {role === "teacher" ? "profesor" : "elev"}
             </Button>
             <p className="text-sm text-muted-foreground">
-              Salvăm doar emailul, numele și textul lecțiilor. Video și audio nu
-              părăsesc niciodată dispozitivul.
+              Salvăm doar emailul, numele și textul lecțiilor. Imaginea camerei nu părăsește dispozitivul; nimic
+              nu se înregistrează.
             </p>
           </form>
         )}

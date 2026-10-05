@@ -31,7 +31,7 @@ Mediere bidirecțională în clasă, nu doar o aplicație de subtitrare: recunoa
 
 - Next.js 16 App Router, Supabase (Postgres + RLS, Realtime, Auth), MediaPipe, LiteRT, face-api, Web Speech API, Claude API pe server.
 - Toată interfața e în română, cu diacritice. Traducerea se aplică conținutului (subtitrări, memoria lecției) pentru elev.
-- Video și audio nu părăsesc dispozitivul; șablonul feței rămâne doar în `localStorage`.
+- Video-ul nu părăsește dispozitivul și nu se înregistrează nimic. Vocea profesorului e transformată în text de serviciul de recunoaștere vocală al browserului (Google în Chrome/Edge, Apple în Safari). Șablonul feței rămâne doar în `localStorage`.
 - Recunoașterea vocală e cea mai stabilă în Chrome/Edge; iOS nu poate vibra.
 - Semnele recunoscute de model sunt ASL, nu LSR (nu există un model public LSR).
 
