@@ -42,18 +42,31 @@ Răspunzi cu exact o traducere pentru fiecare replică, în aceeași ordine. Nu 
 }
 
 /** API-ul public MyMemory (gratuit, fără cheie) — rezerva când nu există AI. */
-async function withMyMemory(texts: string[], target: string): Promise<string[]> {
-  return Promise.all(
-    texts.map(async (text) => {
-      const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=ro|${target}`;
-      const res = await fetch(url, { signal: AbortSignal.timeout(8000) });
-      if (!res.ok) throw new Error(`MyMemory ${res.status}`);
-      const body = (await res.json()) as { responseStatus?: number; responseData?: { translatedText?: string } };
-      const out = body.responseData?.translatedText;
-      if (body.responseStatus !== 200 || !out) throw new Error("MyMemory nu a putut traduce.");
-      return out;
-    }),
-  );
+async function myMemoryOne(text: string, target: string): Promise<string | null> {
+  try {
+    const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=ro|${target}`;
+    const res = await fetch(url, { signal: AbortSignal.timeout(8000) });
+    if (!res.ok) return null;
+    const body = (await res.json()) as { responseStatus?: number; responseData?: { translatedText?: string } };
+    const out = body.responseData?.translatedText;
+    return body.responseStatus === 200 && out ? out : null;
+  } catch {
+    return null;
+  }
+}
+
+/** API-ul public MyMemory (gratuit, fără cheie): frază cu frază, câte 4 deodată; null = încă netradusă. */
+async function withMyMemory(texts: string[], target: string): Promise<(string | null)[]> {
+  const out: (string | null)[] = new Array(texts.length).fill(null);
+  let next = 0;
+  const worker = async () => {
+    while (next < texts.length) {
+      const i = next++;
+      out[i] = await myMemoryOne(texts[i], target);
+    }
+  };
+  await Promise.all(Array.from({ length: Math.min(4, texts.length) }, worker));
+  return out;
 }
 
 /**
@@ -75,16 +88,15 @@ export async function POST(request: Request) {
   let engine: "claude" | "mymemory" | "cache" = "cache";
 
   if (missing.length) {
-    let translated: string[];
+    let translated: (string | null)[];
     try {
       translated = await withClaude(missing, target);
       engine = "claude";
     } catch {
-      try {
-        translated = await withMyMemory(missing, target);
-        engine = "mymemory";
-      } catch (e) {
-        return Response.json({ error: `Traducerea nu este disponibilă acum (${(e as Error).message}).` }, { status: 502 });
+      translated = await withMyMemory(missing, target);
+      engine = "mymemory";
+      if (translated.every((t) => t === null)) {
+        return Response.json({ error: "Traducerea nu este disponibilă acum." }, { status: 502 });
       }
     }
     let j = 0;
@@ -92,7 +104,8 @@ export async function POST(request: Request) {
       if (result[i] !== null) return;
       const out = translated[j++];
       result[i] = out;
-      remember(`${target}:${t}`, out);
+      // Doar traducerile reușite intră în cache; restul se reîncearcă.
+      if (out) remember(`${target}:${t}`, out);
     });
   }
 

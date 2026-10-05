@@ -192,7 +192,7 @@ export function MessageList({
         }
         const student = m.sender_role === "student";
         const Icon = m.kind === "sign" ? Hand : m.kind === "typed" ? Keyboard : Mic;
-        const tr = !student && lang && lang !== "ro" ? translations?.get(m.id) : undefined;
+        const tr = lang && lang !== "ro" ? translations?.get(m.id) : undefined;
         return (
           <RouteStop
             key={m.id}

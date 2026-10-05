@@ -254,13 +254,13 @@ Totul e real: semnele elevului și vocea profesorului. Nu există un scenariu au
 
 **Cu o zi înainte**
 - Creează conturile (un profesor, un elev) pe https://signals.akiokun.com și intră o dată cu fiecare, pe dispozitivele de la demo.
-- Pe telefonul elevului: `/elev/antrenare` → **Exemplu: prezentarea mea** → *Adaugă în dicționar*. Cuvântul **PREZENTARE** rostește „Bună! Sunt elev la Colegiul Național de Informatică Tudor Vianu.” Antrenează-l cu un semn ușor de deosebit (de exemplu salutul ASL *hello*, de la frunte în afară), 2–3 înregistrări, în lumina din sală.
+- Pe telefonul elevului: `/elev/antrenare` → **Prezentare în 2 semne**. Se adaugă **SALUT** („Bună!”, salutul ASL *hello*: palma la tâmplă, apoi spre în afară — antrenat cu *Mișcare*) și **ELEV VIANU** („Sunt elev la Colegiul Național de Informatică Tudor Vianu.”, mâna „Y”: degetul mare și cel mic întinse, ținută nemișcat — antrenat cu *Înregistrează 2 s*). 2–3 înregistrări fiecare, în lumina din sală. Rezervă: **Prezentare într-un semn** (o singură frază).
 - Telefonul profesorului: volumul sus; Chrome sau Edge (recunoașterea vocală).
 
 **Pe scenă**
 1. **Profesorul** intră în cont → *Panoul meu* → șablonul *Biologie · Fotosinteza* → **Pornește lecția**. Pe ecran apare codul și QR-ul.
 2. **Elevul** intră cu codul. **Tableta de pe masă** (sau proiectorul) scanează QR-ul → *Masa elevului* / *Ecranul clasei*. Pe linia de sus se aprind stațiile: Profesor, Elev, Masa.
-3. Elevul alege **Dicționarul meu** și face semnul **PREZENTARE**. După confirmarea de 1,5 s, telefonul profesorului spune cu voce: *„Bună! Sunt elev la Colegiul Național de Informatică Tudor Vianu.”*
+3. Elevul alege **Dicționarul meu** și face semnele **SALUT**, apoi **ELEV VIANU**. După confirmarea de 1,5 s a fiecăruia, telefonul profesorului spune cu voce: *„Bună!”*, apoi *„Sunt elev la Colegiul Național de Informatică Tudor Vianu.”*
 4. Profesorul pornește microfonul: *„Bun venit! Astăzi vorbim despre fotosinteză. Clorofila este pigmentul verde din frunze.”* Pe masa elevului apare textul mare, tradus în limba aleasă; termenii-cheie apar singuri.
 5. Elevul semnează **NU ÎNȚELEG**: semaforul devine roșu, telefonul profesorului rostește „Nu am înțeles.” și insigna pulsează. Profesorul apasă **Am văzut**.
 6. Profesorul anunță: *„Tema pentru mâine: exercițiile 1, 2 și 3 de la pagina 42.”* Elevul primește alerta de temă.

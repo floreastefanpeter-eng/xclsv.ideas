@@ -44,9 +44,9 @@ async function getTools(mode: TrackerMode): Promise<Tools> {
           baseOptions: { modelAssetPath: HAND_MODEL_URL, delegate },
           runningMode: "VIDEO",
           numHands: 2,
-          minHandDetectionConfidence: 0.55,
-          minHandPresenceConfidence: 0.55,
-          minTrackingConfidence: 0.55,
+          minHandDetectionConfidence: 0.5,
+          minHandPresenceConfidence: 0.4,
+          minTrackingConfidence: 0.35,
         }),
       );
       return {
@@ -70,6 +70,8 @@ async function getTools(mode: TrackerMode): Promise<Tools> {
       mp.HolisticLandmarker.createFromOptions(vision, {
         baseOptions: { modelAssetPath: HOLISTIC_MODEL_URL, delegate },
         runningMode: "VIDEO",
+        // Implicit 0,5: la mișcări rapide (imagine neclară), mâinile dispăreau.
+        minHandLandmarksConfidence: 0.3,
       }),
     );
     return {
@@ -200,8 +202,9 @@ export function useHandTracker(onFrame: (frame: VisionFrame) => void, color = "#
       clock = Math.max(clock + 1, performance.now());
       const raw = tools.detect(v, clock);
       // Mâinile netezite (One Euro) pentru desen și dicționar; cadrul Holistic rămâne brut pentru modelul ASL.
-      const r = { ...raw, hands: { ...raw.hands, landmarks: smoother.apply(raw.hands.landmarks, raw.hands.handedness, clock) } };
-      if (canvas) drawHands(canvas, v, r.hands.landmarks, tools.connections, color);
+      const smooth = smoother.apply(raw.hands.landmarks, raw.hands.handedness, clock);
+      const r = { ...raw, hands: { landmarks: smooth.hands, handedness: smooth.handedness } };
+      if (canvas) drawHands(canvas, v, smooth.hands, tools.connections, color, smooth.held);
       setHandsVisible((n) => (n === r.hands.landmarks.length ? n : r.hands.landmarks.length));
 
       // Ghidul de încadrare: lumină, distanță, mâini ieșite din cadru.
@@ -265,6 +268,8 @@ function drawHands(
   hands: { x: number; y: number }[][],
   connections: Connection[],
   color: string,
+  /** Mâini „ținute” (dispărute de câteva cadre): desenate mai transparent. */
+  held: boolean[] = [],
 ) {
   const w = video.videoWidth;
   const h = video.videoHeight;
@@ -273,7 +278,8 @@ function drawHands(
   const ctx = canvas.getContext("2d");
   if (!ctx) return;
   ctx.clearRect(0, 0, w, h);
-  for (const hand of hands) {
+  hands.forEach((hand, i) => {
+    ctx.globalAlpha = held[i] ? 0.45 : 1;
     ctx.strokeStyle = color;
     ctx.lineWidth = Math.max(3, w / 160);
     ctx.lineCap = "round";
@@ -292,5 +298,6 @@ function drawHands(
       ctx.arc(p.x * w, p.y * h, Math.max(3, w / 140), 0, Math.PI * 2);
       ctx.fill();
     }
-  }
+  });
+  ctx.globalAlpha = 1;
 }

@@ -400,10 +400,10 @@ function StudentLesson({
     for (const s of dictionary) by.set(s.category, [...(by.get(s.category) ?? []), s]);
     return by;
   }, [dictionary]);
-  const captions = useMemo(() => messages.slice(-30), [messages]);
+  const captions = useMemo(() => messages.slice(-80), [messages]);
   const lang = profile.language;
   const toTranslate = useMemo(
-    () => captions.filter((m) => m.sender_role === "teacher" && m.kind !== "system").map((m) => ({ id: m.id, text: m.text })),
+    () => captions.filter((m) => m.kind !== "system").map((m) => ({ id: m.id, text: m.text })),
     [captions],
   );
   const { translations, status: translationStatus } = useTranslations(toTranslate, lang);

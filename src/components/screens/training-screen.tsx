@@ -55,16 +55,13 @@ const PRESENTATION_SIGNS = [
     hint: "Salutul ASL: palma dreaptă, degetele lipite, la tâmplă, apoi mâna spre în afară. Antrenează cu „Mișcare”.",
   },
   {
-    word: "EU ELEV",
-    phrase: "Sunt elev",
-    hint: "Pumnul strâns, pus pe piept, ținut nemișcat. Antrenează cu „Înregistrează 2 s”.",
-  },
-  {
-    word: "VIANU",
-    phrase: "la Colegiul Național de Informatică Tudor Vianu.",
+    word: "ELEV VIANU",
+    phrase: "Sunt elev la Colegiul Național de Informatică Tudor Vianu.",
     hint: "Mâna „Y”: degetul mare și cel mic întinse, celelalte strânse, ținută nemișcat. Antrenează cu „Înregistrează 2 s”.",
   },
 ];
+/** Cuvintele vechi ale prezentării (3 semne), înlocuite de ELEV VIANU. */
+const OLD_PRESENTATION_IDS = ["w_eu_elev", "w_vianu"];
 
 export default function TrainingScreen() {
   const { profile, samples, moving, dictionary, setProfile, setSamples, addMoving, resetMoving, addWord, removeWord, sync } =
@@ -511,16 +508,17 @@ export default function TrainingScreen() {
                 className="min-h-11 text-sm font-semibold text-ink underline decoration-ink/30 underline-offset-4 hover:decoration-prof"
                 onClick={() => {
                   // Prezentarea în 3 semne: fiecare semn rostește o parte a propoziției.
+                  OLD_PRESENTATION_IDS.forEach((id) => dictionary.some((d) => d.id === id) && removeWord(id));
                   const added = PRESENTATION_SIGNS.map((w) => addWord(w.word, w.phrase, w.hint)).filter(Boolean).length;
                   setMessage({
                     ok: true,
                     text: added
-                      ? "SALUT, EU ELEV și VIANU sunt în dicționar, cu indicațiile pe card. Dacă le antrenaseși cu alte semne, apasă săgeata circulară (Resetează) pe card și antrenează-le din nou."
+                      ? "SALUT și ELEV VIANU sunt în dicționar, cu indicațiile pe card. Antrenează-le mai jos."
                       : "Cuvintele prezentării sunt deja în dicționar.",
                   });
                 }}
               >
-                Prezentare în 3 semne
+                Prezentare în 2 semne
               </button>
               <button
                 type="button"
