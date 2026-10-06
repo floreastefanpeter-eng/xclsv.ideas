@@ -4,7 +4,7 @@ import { createClient, type SupabaseClient, type Session } from "@supabase/supab
 
 let client: SupabaseClient | null = null;
 
-/** Adresa publică (NEXT_PUBLIC_SITE_URL, de ex. https://signals.akiokun.com); local, adresa paginii. */
+/** Adresa publică (NEXT_PUBLIC_SITE_URL; local, adresa paginii. */
 export function siteUrl(): string {
   const configured = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/+$/, "");
   if (configured) return configured;
