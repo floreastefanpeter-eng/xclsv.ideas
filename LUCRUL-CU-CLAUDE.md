@@ -42,7 +42,7 @@ Cererea echipei: cercetare pentru biblioteci mai bune, estomparea fețelor „f�
 
 ## 3. Lansarea și conturile
 
-- **Deploy:** Claude a legat proiectul Vercel `xclsv.ideas` și a publicat aplicația pe **https://signals.akiokun.com** prin Vercel CLI, după ce echipa s-a logat. A găsit de ce se vedea versiunea veche (proiectele Vercel erau legate de alt cont GitHub) și de ce pagina cădea (lipseau variabilele Supabase), apoi a reparat ambele.
+- **Deploy:** Claude a legat proiectul Vercel `xclsv.ideas` și a publicat aplicația pe **https://** prin Vercel CLI, după ce echipa s-a logat. A găsit de ce se vedea versiunea veche (proiectele Vercel erau legate de alt cont GitHub) și de ce pagina cădea (lipseau variabilele Supabase), apoi a reparat ambele.
 - **Conturi fără limite pentru demo:** când serverul de email Supabase atinge limita, contul se creează ca „cont demo” pe dispozitiv; confirmarea se poate face și cu un cod de 6 cifre.
 - **Administrare:** rolul `admin`, panoul `/admin` (utilizatori, lecții, feedback, statistici) și protecția ca nimeni să nu-și poată da singur rolul de admin; contul echipei a fost numit administrator.
 - **Linkurile din emailuri:** duc la adresa publică a site-ului, nu la `localhost`.
