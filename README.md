@@ -2,7 +2,6 @@
 
 **Elevul semnează. Clasa înțelege.**
 
-Live: **https://signals.akiokun.com**
 
 SIGNals este un „kit al clasei” pentru elevii surzi sau hipoacuzici. Mediază lecția în ambele sensuri:
 
@@ -57,7 +56,7 @@ SIGNals începe cu **contul**: profesorul și elevul se înregistrează (email +
 | Serviciu | La ce folosește |
 | --- | --- |
 | [Supabase](https://supabase.com) | Postgres + Row Level Security, Auth (email + parolă, anonim), Realtime (Postgres Changes, Broadcast, Presence) |
-| [Vercel](https://vercel.com) | găzduire, rutele API (Node.js), domeniul `signals.akiokun.com` |
+| [Vercel](https://vercel.com) | găzduire, rutele API (Node.js), domeniul `` |
 
 ### Cum a fost construit
 
@@ -95,7 +94,7 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=<cheia anon / publishable>
 SUPABASE_SERVICE_ROLE_KEY=<cheia service_role / secret>   # doar pe server
 ANTHROPIC_API_KEY=<cheia Anthropic>                       # doar pe server
 ANTHROPIC_MODEL=claude-sonnet-5-5
-NEXT_PUBLIC_SITE_URL=https://signals.akiokun.com            # unde duc linkurile din emailuri
+NEXT_PUBLIC_SITE_URL=         # unde duc linkurile din emailuri
 ```
 
 Cheile `SUPABASE_SERVICE_ROLE_KEY` și `ANTHROPIC_API_KEY` sunt citite doar în `src/app/api/...` și `src/lib/supabase/server.ts` (marcat `server-only`); nu ajung niciodată în browser. Fără `ANTHROPIC_API_KEY`, memoria lecției se generează local, fără AI, cu un mesaj clar. Fără `SUPABASE_SERVICE_ROLE_KEY`, memoria se generează local pe dispozitivul profesorului și se trimite tuturor ecranelor.
@@ -112,7 +111,7 @@ Pentru testul complet pe un singur calculator, deschide trei ferestre Chrome: pr
 
 ## Deploy pe Vercel și testarea pe telefoane
 
-Pe telefon, camera și microfonul cer **HTTPS**. Producția rulează pe Vercel, la **https://signals.akiokun.com** (proiectul Vercel `xclsv.ideas`).
+Pe telefon, camera și microfonul cer **HTTPS**. Producția rulează pe Vercel (proiectul Vercel `xclsv.ideas`).
 
 **Din terminal (Vercel CLI):**
 
@@ -136,7 +135,7 @@ Test local pe telefon: `npx next dev --experimental-https`, apoi `https://<IP-ul
 
 - **Testimoniale** (`/testimoniale`, cu link din meniu și secțiune pe prima pagină): la finalul lecției, profesorul și elevul pot scrie câteva cuvinte și pot bifa acordul de publicare. Pagina arată doar testimonialele cu acord (prenume, rol, școală), prin funcția publică `public_testimonials()`. Nu se inventează testimoniale.
 - **Administrare** (`/admin`): situația platformei, toți utilizatorii (cu schimbarea rolului), toate lecțiile (încheiere, ștergere, ecranul clasei) și feedback-ul. Primul administrator se numește din SQL (vezi `CLAUDE.md`); apoi un administrator îi poate numi pe alții.
-- **Linkurile din emailuri**: duc la `NEXT_PUBLIC_SITE_URL` (de ex. `https://signals.akiokun.com`). În Supabase → *Authentication → URL Configuration*, pune aceeași adresă la *Site URL* și adaugă `https://signals.akiokun.com/**` la *Redirect URLs*.
+- **Linkurile din emailuri**: duc la `NEXT_PUBLIC_SITE_URL` . În Supabase → *Authentication → URL Configuration*, pune aceeași adresă la *Site URL* și adaugă `https:///**` la *Redirect URLs*.
 - **Confirmarea prin cod**: după „Cont nou”, SIGNals cere codul de 6 cifre din email (cu „Retrimite codul”). În Supabase → *Authentication → Email Templates → Confirm signup*, adaugă în șablon `{{ .Token }}` (codul); linkul `{{ .ConfirmationURL }}` poate rămâne.
 - **Cont demo, fără limite**: serverul de email inclus în Supabase trimite doar câteva emailuri pe oră. Dacă emailul nu poate pleca, contul se creează oricum, ca **cont demo** pe acel dispozitiv (sesiune anonimă + profil) și funcționează complet. Pentru o clasă reală: *Authentication → SMTP Settings* cu un server propriu (de ex. Resend) și limite mai mari la *Rate Limits*, sau oprește „Confirm email” pentru demo.
 - **Conturi** (`/`): *Intră în cont* sau *Cont nou* (profesor sau elev). Un trigger Supabase creează profilul (`profiles`: rol, nume, școală, limbă). Ecranele profesorului și elevului cer cont; masa elevului și proiectorul intră doar cu codul.
@@ -255,7 +254,7 @@ Sfaturi: aceeași persoană și aceeași lumină ca la prezentare; semne cu form
 Totul e real: semnele elevului și vocea profesorului. Nu există un scenariu automat.
 
 **Cu o zi înainte**
-- Creează conturile (un profesor, un elev) pe https://signals.akiokun.com și intră o dată cu fiecare, pe dispozitivele de la demo.
+- Creează conturile (un profesor, un elev) și intră o dată cu fiecare, pe dispozitivele de la demo.
 - Pe telefonul elevului: `/elev/antrenare` → **Prezentare în 2 semne**. Se adaugă **SALUT** („Bună!”, salutul ASL *hello*: palma la tâmplă, apoi spre în afară — antrenat cu *Mișcare*) și **ELEV VIANU** („Sunt elev la Colegiul Național de Informatică Tudor Vianu.”, mâna „Y”: degetul mare și cel mic întinse, ținută nemișcat — antrenat cu *Înregistrează 2 s*). 2–3 înregistrări fiecare, în lumina din sală. Rezervă: **Prezentare într-un semn** (o singură frază).
 - Telefonul profesorului: volumul sus; Chrome sau Edge (recunoașterea vocală).
 
